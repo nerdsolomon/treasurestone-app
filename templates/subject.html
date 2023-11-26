@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+<center><b class="fs-5">{{ subject.room.title }}</b></center><br>
+
+<div class="card shadow">
+	<div class="card-header text-center">
+		<p class="lead fs-5">{{ subject.title }}</p>
+	</div>
+	<div class="card-body">
+		<p class="lead fs-5">e-material</p>
+		<p class="card-text fw-light">
+			You are required to download the e-material for this subject and study before attempting the assessments.
+		</p>
+	 {% if subject.file %}
+		<a class="btn btn-outline-success" href="{{url_for('download', filename=subject.file)}}">Download<a>
+	{% else %}
+		<a class="btn btn-outline-danger">No File</a>
+	{% endif %}
+	</div>
+</div>
+
+<br/><br/>
+
+<b>Assessment</b><br/><br/>
+
+<div class="card shadow">
+	<div class="card-body">
+		<p class="lead fs-5">Important to Note :</p>
+		<p class="card-text fw-light">
+			You are required to select an answer before moving to the next question. When next is clicked, your choice will be submitted immediately, so revisiting a question is <b>NOT</b> an option.
+		</p><br/>
+		<a class="btn btn-outline-secondary" href="{{url_for('cbt', id=subject.id)}}">Click here to begin Test</a>
+	</div>
+</div>
+
+
+<br/><br/>
+
+<b>Examination</b><br/><br/>
+
+<div class="card shadow">
+	<div class="card-body">
+		<p class="lead fs-5">Important to Note :</p>
+		<p class="card-text fw-light">
+			You are required to select an answer before moving to the next question. When next is clicked, your choice will be submitted immediately, so revisiting a question is <b>NOT</b> an option.
+		</p><br/>
+		<a class="btn btn-outline-secondary" href="{{url_for('exam', id=subject.id)}}">Click here to begin Exam</a>
+	</div>
+</div>
+
+
+{% endblock %}

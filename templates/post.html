@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+{% if session["account"] == "Admin" %}
+	{% if current_user.type == "Admin" %}
+	<div class="sidebar">
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+   <div class="accordion-item">
+    <span class="accordion-header ">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Editpost" aria-expanded="false" style="background-color: #f1f1f1;" aria-controls="Editpost">Edit Post</button>
+    </span>
+    <div id="Editpost" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample" style="background-color: #f1f1f1;"><br>
+		<form method = 'POST'>
+		{{ form.hidden_tag() }}
+		{{ form.headline(class='form-control form-control-sm', rows="1", placeholder= "Headline") }}<br/>
+		{{ form.content(class="form-control form-control-sm", rows="6") }}<br/>
+		<center>{{ form.submit(class="form-control form-control-sm btn-secondary") }}</center>
+		</form>
+	</div>
+  </div>
+</div>
+
+	</div><br>
+	{% endif %}
+{% endif %}
+
+
+{% if session["account"] == "Admin" %}
+	{% if current_user.type == "Admin" %}
+<div class="content">
+	{% endif %}
+{% endif %}
+
+	{% if post.headline %}
+<span class="fs-1 fw-bold">{{ post.headline }}</span><br>
+	{% endif %}
+
+<small class="fst-italic text-secondary">by</small> {{ post.admin }}<br><small class="fst-italic text-secondary">{{ post.time }}</small>
+<br><br>
+
+	{% if post.file %}
+<img src="{{url_for('static', filename='website-files/' + post.file )}}" class="object-fit-cover" width="100%">
+	<br><br>
+	{% endif %}
+
+	{% if post.content %}
+<span style="white-space:pre-wrap !important;" >{{ post.content }}</span>
+	{% endif %}
+
+	{% if session["account"] == "Admin" %}
+		{% if current_user.type == "Admin" %}
+	<br>
+	<button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="offcanvas" data-bs-target="#DelPost">Delete</button>
+		{% endif %}
+	{% endif %}
+	
+	<div class="position-relative">
+	  <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="DelPost" style="width: 18em;">
+		<div class="offcanvas-body">
+		<p class="fs-5 text-center">Do you want to continue?</p>
+	<center>
+		<a class="btn btn-danger"href="{{ url_for('del_post', id=post.id) }}" >Delete</a>
+		<button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+	</center>
+		</div>
+	  </div>
+
+{% if session["account"] == "Admin" %}
+	{% if current_user.type == "Admin" %}
+</div>
+	{% endif %}
+{% endif %}
+
+{% endblock %}

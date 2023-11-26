@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+{% if session["account"] == "Student" %}
+
+<center><span class="fw-bold">TERM PERFORMANCE REPORT SHEET</span></center>
+<br>
+
+<p>
+<div class="row">
+	<div class="col">
+	<b>PERSONAL INFORMATION</b>
+	<br>
+	<b>Student Name : </b>{{ current_user.first_name }} {{ current_user.last_name }}<br/>
+	<b>Sex : </b>{{ current_user.sex }}<br/>
+	<b>Email : </b>{{ current_user.email }}<br/>
+	</div>
+	
+	<div class="col">
+	<b>OTHER INFORMATION</b>
+	<br>
+	<b>Class : </b>{{ current_user.room.title }}<br/>
+<b>Session : </b>{{ current_user.room.session.session }} - {{ current_user.room.session.term }} Term
+<br>
+	<b>Class Teacher : </b>{{ current_user.room.admin.username }}<br><br>
+	</div>
+</div>
+</p>
+
+<center>
+	<span class="fw-bold">COGNITIVE DOMAIN</span>
+</center>
+	
+{% for table in tables %}
+	{{ table|safe }}
+{% endfor %}
+
+<br/>
+
+<div class="row">
+	<div class="col">
+{% for affect in affect %}
+	{{ affect|safe }}
+{% endfor %}
+	</div>
+
+	<div class="col">
+{% for psych in psych %}
+	{{ psych|safe }}
+{% endfor %}
+	</div>
+</div>
+
+<br/>
+
+<b>Class Teacher's Comment : </b>{{ current_user.comment }}<br>
+<b>Administrator's Remark : </b> {{ current_user.remark }}<br><br>
+<p class="text-center">Administrator's Signature/Stamp</p>
+
+{% else %}
+
+<p class="text-center fs-5 fw-bold">{{ room.title }} Broadsheet</p>
+
+<p>
+	<b>Class : </b>{{ room.title }}<br>
+	<b>Class Teacher : </b>{{ room.admin.username }}
+</p>
+
+<div class="table-responsive">
+	{% for table in tables %}
+		{{ table|safe }}
+	{% endfor %}
+</div>
+
+<br/><br/>
+
+<center>
+{% if current_user.id == room.admin.id %}
+<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Comment">Comment</button>
+<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Test">Edit Test</button>
+<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Exam">Edit Exam</button>
+{% endif %}
+{% if current_user.type == "Admin" %}
+<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Remark">Remark</button>
+{% endif %}
+<a class="btn btn-sm text-success" href="{{url_for('save_sheet', id=room.id)}}">Download</a>
+</center>
+
+
+<div class="position-relative">
+	<div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Comment" style="width: 24rem;">
+		<div class="offcanvas-body">
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		<p class="text-center fw-bold">Class Teacher's Comment</p>
+<form method = 'POST'>
+	<select class="form-select" name="student">
+    	<option selected>Student</option>
+		{% for student in students %}
+   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+		{% endfor %}
+	</select>
+	<br>
+	<input type="text" class="form-control" placeholder="Comment" name="comment">
+	<input type="hidden" value="comment" name="name"><br>
+	<center>
+	<button type="submit" class="btn btn-secondary">Done</button>
+	</center>
+</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="position-relative">
+	<div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Remark" style="width: 24rem;">
+		<div class="offcanvas-body">
+		<p class="text-center fw-bold">Administrator's Remark</p>
+<form method = 'POST'>
+	<select class="form-select" name="student">
+    	<option selected>Student</option>
+		{% for student in students %}
+   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+		{% endfor %}
+	</select>
+	<br>
+	<input type="text" class="form-control" placeholder="Remark" name="remark">
+	<input type="hidden" value="remark" name="name"><br>
+	<center>
+	<button type="submit" class="btn btn-secondary">Done</button>
+	</center>
+</form>
+		</div>
+	</div>
+</div>
+
+
+<div class="position-relative">
+<div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Test" style="width: 24rem;">
+	<div class="offcanvas-body">
+	<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	<p class="text-center fw-bold">Edit Test Scores</p><br/>
+	<form method = 'POST'>
+	<select class="form-select" name="student">
+    	<option selected>Student</option>
+		{% for test in test_st %}
+   	<option value="{{ test.student.id }}">{{ test.student.first_name }} {{ test.student.last_name }}</option>
+   	 {% endfor %}
+	</select><br/>
+	<select class="form-select" name="subject">
+    	<option selected>Subject</option>
+    	{% for test in test_sub %}
+   	<option value="{{ test.subject.id }}">{{ test.subject.title }}</option>
+		{% endfor %}
+	</select><br/>
+	<input type="hidden" value="test" name="name">
+	<input type="number" class="form-control" name="score" placeholder="Score"><br/>
+<center>
+	<button type="submit" class="btn btn-secondary">Done</button>
+</center>
+	<br><br>
+	</form>
+	</div>
+</div>
+
+<div class="position-relative">
+<div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Exam" style="width: 24rem;">
+	<div class="offcanvas-body">
+	<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	<p class="text-center fw-bold">Edit Exam Scores</p><br/>
+	<form method = 'POST'>
+	<select class="form-select" name="student">
+    	<option selected>Student</option>
+		{% for exam in exam_st %}
+   	<option value="{{ exam.student.id }}">{{ exam.student.first_name }} {{ exam.student.last_name }}</option>
+   	 {% endfor %}
+	</select><br/>
+	<select class="form-select" name="subject">
+    	<option selected>Subject</option>
+    	{% for exam in exam_sub %}
+   	<option value="{{ exam.subject.id }}">{{ exam.subject.title }}</option>
+		{% endfor %}
+	</select><br/>
+	<input type="hidden" value="exam" name="name">
+	<input type="number" class="form-control" name="score" placeholder="Score"><br/>
+<center>
+	<button type="submit" class="btn btn-secondary">Done</button>
+</center>
+	<br>
+	</form>
+	</div>
+</div>
+</div>
+
+{% endif %}
+	
+{% endblock %}

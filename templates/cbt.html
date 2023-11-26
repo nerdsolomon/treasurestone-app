@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+<p class="text-center fs-5 fw-bold">{{ subject.title }}</p>
+
+	{% if cbts.items %}
+	
+	<div class="card shadow" style="width: 50rem;">
+		<div class="card-header">
+			<p class="text-center fw-bold">
+	   	Question {{ cbts.page }} of {{ cbts.pages }}
+			</p>
+		</div>
+	<div class="card-body">
+		
+	{% for cbt in cbts.items %}
+
+	{% if cbt.file %}
+	<img src="{{url_for('static', filename='website-files/' + cbt.file )}}" class="object-fit-cover" width="100%"><br/>
+	{% endif %}
+
+<span style="white-space:pre-wrap !important;" class="fs-4">{{ cbt.question }}</span><br/><br/>
+
+<form method="POST">
+
+<div class="form-check">
+	<input class="form-check-input" type="radio" name="option" id="exampleRadios1" value='{{ cbt.option1 }}'> 
+	<label class="form-check-label" for="exampleRadios1"><span class="fs-4"> {{ cbt.option1 }}</span></label>
+</div>
+<div class="form-check">
+	<input class="form-check-input" type="radio" name="option" id="exampleRadios2" value='{{ cbt.option2 }}'> 
+	<label class="form-check-label" for="exampleRadios2"><span class="fs-4"> {{ cbt.option2 }}</span></label>
+</div>
+<div class="form-check">
+	<input class="form-check-input" type="radio" name="option" id="exampleRadios3" value="{{ cbt.option3 }}"> 
+	<label class="form-check-label" for="exampleRadios3"><span class="fs-4"> {{ cbt.option3 }}</span></label>
+</div>
+
+	{% endfor %}	
+
+<center>
+	<button class="btn btn-outline-secondary" type="submit">
+		{% if cbts.page == cbts.pages %}
+			Finish
+		{% else %}
+			Next
+		{% endif %}
+	</button>
+</center>
+
+</form>
+
+	</div>
+</div>
+
+	{% else %}
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	<p>
+		Questions are unavailable, please await your Administrator's announcement...
+	</p>
+</div>
+
+	{% endif %}
+
+{% endblock %}

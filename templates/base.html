@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
+    <title>Treasure Stone Academic Private School</title>
+  </head>
+  <body class="container">
+  <nav class="nav sticky-top nav-expand-lg navbar-light bg-white">
+
+		<button class="btn position-fixed m-3 start-0 top-0"type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas">
+			<span class="navbar-toggler-icon"></span>
+		</button> 
+	
+
+    <div class="col text-center">
+      <a href="/"><img class="object-fit-cover" src="{{ url_for('static',filename='logo.png') }}" width="80"></a><br>
+      
+    {% if active %}
+  	<small class="fst-italic text-secondary">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</small>
+	{% endif %}
+    </div>
+  </nav><br>
+  
+	
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="false" data-bs-backdrop="true" tabindex="-1" id="offcanvas" aria-labelledby="offcanvas">
+ 
+<div class="offcanvas-body">
+<br><br>
+<a class="nav-link link-dark " href="/"> 📰 Newsletter </a>
+{% if account == "Student" %}
+<hr>
+<a class="nav-link link-dark " href="{{url_for('student', id= current_user.id)}}">👤 Dashboard</a>
+<hr>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+   <div class="accordion-item">
+    <span class="accordion-header ">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">📚 Subjects</button>
+    </span>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body"> 
+    {% for subject in subjects %}
+<hr>
+<a href="{{url_for('subject', id= subject.id)}}" class="nav-link link-dark ">{{ subject.title }}</a>
+	{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% elif  account == "Admin" %}
+
+<hr>
+<a class="nav-link link-dark " href="{{url_for('admin', id= current_user.id)}}">👤 Dashboard</a>
+<hr>
+<a class="nav-link link-dark " href="{{ url_for('classes', id=active.session.id )}}">📖 Classrooms</a>
+<hr>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+   <div class="accordion-item">
+    <span class="accordion-header ">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">🗂 Registers</button>
+    </span>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body"> 
+    {% for room in rooms %}
+<hr>
+<a href="{{url_for('students', id=room.id)}}" class="nav-link link-dark ">{{ room.title }}</a>
+	{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+   <div class="accordion-item">
+    <span class="accordion-header ">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">📑 Broadsheets</button>
+    </span>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body"> 
+    {% for room in rooms %}
+<hr>
+<a href="{{url_for('result', id=room.id)}}" class="nav-link link-dark ">{{ room.title }}</a>
+	{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+	{% endif %}
+	
+{% if current_user.is_authenticated %}
+<hr>
+<a href="/contact"class="nav-link link-dark">📞 Contact</a>
+<hr>
+<a class="nav-link link-dark "  href="/logout">📤 Logout</a>
+{% else %}
+<hr>
+<a class="nav-link link-dark " href="/admin-login">💼 Admin Login</a>
+{% if active %}
+<hr>
+<a class="nav-link link-dark " href="{{ url_for('login', id=active.session.id )}}">🎓 Student Login</a>
+{% endif %}
+<hr>
+<a href="/library" class="nav-link link-dark">📚 Library</a>
+<hr>
+<a href="/contact"class="nav-link link-dark">📞 Contact</a>
+<hr>
+<a href="/about" class="nav-link link-dark">ℹ About</a>
+<hr>
+<a href="/setting" class="nav-link link-dark">⚙ Setting</a>
+{% endif %}
+
+<br><br><br>
+<center>
+<small class="text-secondary">©️{{ time }} Treasure Stone</small>
+</center> <br>
+</div>
+</div>	
+      	
+{% block content %} 
+
+
+{% endblock %}
+
+<br><br>
+<center>
+<small class="text-secondary">©️{{ time }} Treasure Stone</small> <br>
+<a href="mailto:nerdsolomon@gmail.com" class="btn btn-sm text-primary">Developed by nerdsolomon</a>
+</center><br><br><br>
+
+   <script src="/static/script.js"></script>
+  </body>
+</html>

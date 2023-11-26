@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+<div class="row g-0">
+	<div class="col-1">
+	<a class="btn btn-sm  btn-outline-secondary" href="{{url_for('class_', id=room.id)}}">Back</a>
+	</div>
+	<div class="col text-center">
+	<p class="text-center fw-bold">Add/Edit Psychomotor Rating</p><br/>
+	</div>
+</div>
+
+<div class="card shadow" style="width:24rem;">
+	<div class="card-body">
+	<form method = 'POST'>
+	
+	<select class="form-select" name="student">
+    	<option selected>STUDENTS</option>
+		{% for student in students %}
+   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+   	 {% endfor %}
+	</select><br/>
+	
+	<select class="form-select" name="handle">
+    	<option selected>HANDLING OF TOOLS</option>
+   	<option value="A">A. Maintain an excellent degree of observable trait</option>
+   	<option value="B">B. Maintains a high level of observable trait</option>
+   	<option value="C">C. Acceptable level for observable trait</option>
+   	<option value="D">D. Shows minimal regard for observable trait</option>
+   	<option value="E">E. Has no regard for oberservable trait</option>
+	</select><br/>
+	
+	<select class="form-select" name="draw">
+    	<option selected>DRAWING AND PAINTING</option>
+   	<option value="A">A. Maintain an excellent degree of observable trait</option>
+   	<option value="B">B. Maintains a high level of observable trait</option>
+   	<option value="C">C. Acceptable level for observable trait</option>
+   	<option value="D">D. Shows minimal regard for observable trait</option>
+   	<option value="E">E. Has no regard for oberservable trait</option>
+	</select><br/>
+	
+	<select class="form-select" name="speech">
+    	<option selected>SPEECH FLUENCY</option>
+   	<option value="A">A. Maintain an excellent degree of observable trait</option>
+   	<option value="B">B. Maintains a high level of observable trait</option>
+   	<option value="C">C. Acceptable level for observable trait</option>
+   	<option value="D">D. Shows minimal regard for observable trait</option>
+   	<option value="E">E. Has no regard for oberservable trait</option>
+	</select><br/>
+	
+	<select class="form-select" name="write">
+    	<option selected>HANDWRITING</option>
+   	<option value="A">A. Maintain an excellent degree of observable trait</option>
+   	<option value="B">B. Maintains a high level of observable trait</option>
+   	<option value="C">C. Acceptable level for observable trait</option>
+   	<option value="D">D. Shows minimal regard for observable trait</option>
+   	<option value="E">E. Has no regard for oberservable trait</option>
+	</select><br/>
+	
+	<select class="form-select" name="public">
+    	<option selected>PUBLIC SPEAKING</option>
+   	<option value="A">A. Maintain an excellent degree of observable trait</option>
+   	<option value="B">B. Maintains a high level of observable trait</option>
+   	<option value="C">C. Acceptable level for observable trait</option>
+   	<option value="D">D. Shows minimal regard for observable trait</option>
+   	<option value="E">E. Has no regard for oberservable trait</option>
+	</select><br/>
+	
+	<select class="form-select" name="sport">
+    	<option selected>SPORT AND GAMES</option>
+   	<option value="A">A. Maintain an excellent degree of observable trait</option>
+   	<option value="B">B. Maintains a high level of observable trait</option>
+   	<option value="C">C. Acceptable level for observable trait</option>
+   	<option value="D">D. Shows minimal regard for observable trait</option>
+   	<option value="E">E. Has no regard for oberservable trait</option>
+	</select><br/>
+
+	<center>
+		<button type="submit" class="btn btn-secondary">Done</button>
+	</center>
+	
+	</form>
+	</div>
+</div>
+	
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+ <div class="alert alert-success alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+ </div>
+{% endfor %}
+
+
+{% if current_user.room.announce %}
+
+<div class="alert alert-warning" role="alert">
+   <p class="text-center display-2">⚠️</p>
+   <p class="card-text fw-light">{{ current_user.room.announce  }}</p>
+</div><br>
+
+{% endif %}
+
+
+<div class="card shadow ">
+	<div class="card-header">
+		<center>
+			<b class="fs-3">TREASURE STONE</b><br>
+			<b>Academic Private School</b>
+		</center>
+	</div>
+	<div class="card-body">
+		<br/>
+		<p class="text-center display-1">🎓</p><br/>
+		<p class="display-3 card-title text-center">{{ current_user.first_name }} {{ current_user.last_name }}</p>
+		<hr class="dropdown-divider">
+		<center><small class="fw-light">EMAIL : {{ current_user.email }}</small></center>
+		<br/>
+	</div>
+</div>
+
+<br/><br/>
+
+<b>Assessment Results</b><br/><br/>
+
+<div class="card shadow">
+	<div class="card-body">
+		<br/>
+		<p class="card-text fw-light">
+			The following results available are for the various Computer Base Test (CBT) you must have participated in for each subject.
+		</p>
+		<br/>
+		<a class="btn btn-outline-success" href="{{url_for('result', id=current_user.id)}}">View Results</a>
+	</div>
+</div>
+<br/>
+
+<center>
+<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Password">Change Password</button>
+<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Email">Change Email</button>
+</center>
+
+
+<div class="position-relative">
+  <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Email" style="width: 19em;">
+	<div class="offcanvas-body">
+	<p class="text-center fw-bold">Change Email</p>
+<form method = 'POST'>
+		<input type="hidden" value="email" name="name">
+	{{ form.email(class="form-control", placeholder="Email") }}<br/>
+	{{ form.old_pass(class="form-control", placeholder="Password") }}
+	<br/>
+	<center>{{ form.submit(class="btn btn-secondary") }}</center>
+</form>
+	</div>
+  </div>
+</div>
+
+
+<div class="position-relative">
+  <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Password" style="width: 18em;">
+	<div class="offcanvas-body">
+	<p class="text-center fw-bold">Change Password</p>
+<form method = 'POST'>
+		<input type="hidden" value="password" name="name">
+	{{ form.old_pass(class="form-control", placeholder="Old Password") }}<br/>
+	{{ form.new_pass(class="form-control", placeholder="New Password") }}<br/>
+	<center>{{ form.submit(class="btn btn-secondary") }}</center>
+</form>
+	</div>
+  </div>
+</div>
+
+{% endblock %}

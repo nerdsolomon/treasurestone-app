@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<p class="fs-5 fw-bold">Change Active Academic Session</p>
+<p class="fs-6 fw-light">The below function changes the active academic session/term. This should be done after the end of a term/session.<br>NOTE : Changing the academic session does NOT erase the data generated in the previous session, they can be accessed by changing the session to the previous year/term.</p>
+
+<form method="POST">
+<div class="row g-1">
+	<div class="col">
+	<input type="hidden" value="active" name="name">
+	<select class="form-select" name="session">
+    	<option selected>Session</option>
+    	{% for session in sessions %}
+		<option value="{{ session.id }}">{{ session.session }} - {{ session.term }} Term</option>
+		{% endfor %}
+	</select>
+	</div>
+	<div class="col">
+	<button class="btn btn-secondary" type="submit">Change</button>
+	</div>
+</div>
+</form>
+
+<br>
+<hr class="dropdown-divider">
+
+<span class="fs-5 fw-bold">Academic Sessions</span>
+<button class="btn text-primary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Session">New Session</button>
+<br><br>
+<p class="fs-6 fw-light">The followings are academic sessions available in the website.</p>
+
+<table class="table table-hover table-sm table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Session</th>
+      <th scope="col">Term</th>
+	  <th scope="col">Date Added</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+	{% for session in sessions %}
+    <tr>
+      <td>{{ session.session }}</td>
+      <td>{{ session.term }}</td>
+	  <td>{{ session.date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<div class="position-relative">
+<div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Session" style="width: 24rem;">
+	<div class="offcanvas-body">
+	<p class="text-center fw-bold">Add Session</p>
+	<form method = 'POST'>
+	{{ form.hidden_tag() }}
+	<input type="hidden" value="session" name="name">
+	{{form.string(class='form-control', placeholder="Session YY/YY") }}<br/>
+	<select class="form-select" name='term'>
+    	<option selected>Term</option>
+		<option value="First">First</option>
+		<option value="Second">Second</option>
+		<option value="Third">Third</option>
+	</select><br/>
+	<center>{{ form.submit(class='btn btn-secondary') }}</center>
+	</form>
+	</div>
+</div>
+</div>
+
+
+{% endblock %}
