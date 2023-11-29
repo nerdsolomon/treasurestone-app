@@ -8,7 +8,8 @@ date = datetime.now()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hello..."
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = ' postgres://ollbyscmrbpqes:de8f72ca1ac0d7c2353b081b1c65cf822f9de02c5348795e6416ae07bb8c0c66@ec2-3-210-173-88.compute-1.amazonaws.com:5432/d25fcogdiruk10'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
