@@ -11,15 +11,13 @@
 
 		<button class="btn position-fixed m-3 start-0 top-0"type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas">
 			<span class="navbar-toggler-icon"></span>
-		</button> 
-	
+		</button>
 
-    <div class="col text-center">
-      <a href="/"><img class="object-fit-cover" src="{{ url_for('static',filename='logo.png') }}" width="80"></a><br>
-      
-    {% if active %}
-  	<small class="fst-italic text-secondary">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</small>
-	{% endif %}
+    <div class="text-center">
+      <a href="/">
+        <img class="object-fit-cover" src="{{ url_for('static',filename='logo.png') }}" width="80">
+        <b class='nav-link text-dark fs-1'>TREASURE STONE SCHOOL</b>
+      </a>
     </div>
   </nav><br>
   

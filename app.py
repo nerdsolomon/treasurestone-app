@@ -12,6 +12,8 @@ from werkzeug.wrappers import Response
 from flask_login import UserMixin
 from datetime import datetime
 import pandas as pd
+from PIL import Image
+import io
 
 
 app = Flask(__name__)
@@ -173,6 +175,18 @@ def create_model():
 		db.create_all()
 		return 'Database model created successfully'
 
+
+def crop_image(img):
+	image = Image.open(io.BytesIO(img))
+	width, height = image.size
+	if width == height:
+	   return image
+	offset  = int(abs(height-width)/2)
+	if width>height:
+		image = image.crop([offset,0,width-offset,height])
+	else:
+		image = image.crop([0,offset,width,height-offset])
+	return image
 
 
 def frame(id):
@@ -493,8 +507,9 @@ def timeline():
 	if form.validate_on_submit():
 		if form.file.data:
 			name = secure_filename(form.file.data.filename)
-			file_name = str(uuid.uuid1()) + "-" + name 
-			form.file.data.save(os.path.join(app.config["FILE_FOLDER"], file_name))
+			file_name = str(uuid.uuid1()) + "-" + name
+			image = crop_image(form.file.data.read()) 
+			image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
 			post = Timeline(content=form.content.data, file=file_name, headline=form.headline.data, admin=current_user.username)
 			store(post)
 			return redirect('/')

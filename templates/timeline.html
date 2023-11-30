@@ -9,6 +9,9 @@
 {% endfor %}
 
 
+
+
+
 {% if session["account"] == "Admin" %}
 	{% if current_user.type == "Admin" %}
 	<div class="sidebar">
@@ -41,7 +44,25 @@
 	{% endif %}
 {% endif %}
 
+
+{% if active %}
+<nav class="nav-dark bg-dark">
+  <div class="text-center">
+    <b class="text-light fs-2">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</b>
+  </div>
+</nav>
+{% endif %}
+
+
+<nav class="nav-dark bg-dark">
+  <div class="text-center">
+    <b class="text-light">NEWSLETTERS</b>
+  </div>
+</nav>
+
+<div class="row">
 {% for post in posts.items %}
+<div class="col-4">
 <div class="card">
 	<a href="{{url_for('post', id= post.id)}}" class="stretched-link"></a>
 	<div class="card-body">
@@ -54,7 +75,9 @@
 	{% endif %}
 	</div>
 </div><br>
+</div>
 {% endfor %}
+</div>
 
 <center>
 <!-- Pagination Links-->
