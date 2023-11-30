@@ -64,11 +64,6 @@ class Timeline(db.Model):
 	admin = db.Column(db.String)
 
 
-class Gallery(db.Model):
-	id =  db.Column(db.Integer, primary_key = True)
-	file = db.Column(db.String)
-
-
 class Session(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
 	date = db.Column(db.String, default=date.strftime('%d %B %Y'))
