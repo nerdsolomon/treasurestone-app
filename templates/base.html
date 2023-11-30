@@ -95,6 +95,10 @@
 {% if current_user.is_authenticated %}
 <hr>
 <a href="/contact"class="nav-link link-dark">📞 Contact</a>
+{% if current_user.type == "Admin" %}
+<hr>
+<a href="/setting" class="nav-link link-dark">⚙ Setting</a>
+{% endif %}
 <hr>
 <a class="nav-link link-dark "  href="/logout">📤 Logout</a>
 {% else %}
@@ -110,8 +114,7 @@
 <a href="/contact"class="nav-link link-dark">📞 Contact</a>
 <hr>
 <a href="/about" class="nav-link link-dark">ℹ About</a>
-<hr>
-<a href="/setting" class="nav-link link-dark">⚙ Setting</a>
+
 {% endif %}
 
 <br><br><br>
