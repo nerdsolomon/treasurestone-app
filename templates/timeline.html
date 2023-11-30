@@ -44,22 +44,22 @@
 {% if active %}
 <nav class="nav-success bg-success">
   <div class="text-center">
-    <b class="text-light fs-4">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</b>
+    <b class="text-light fs-4">{{ active.session.session }} Academic Session<br>{{ active.session.term }} Term</b>
   </div>
 </nav>
-<br>
+
 {% endif %}
 
-<div id="carouselExampleSlidesOnly" class="carousel slide" style="width: 200; height: 200;" data-bs-ride="carousel">
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" alt="...">
+      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" style="width: 300; height: 300;" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" alt="...">
+      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" style="width: 300; height: 300;" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" alt="...">
+      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" style="width: 300; height: 300;" alt="...">
     </div>
   </div>
 </div>
