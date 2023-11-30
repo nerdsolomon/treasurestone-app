@@ -42,21 +42,38 @@
 {% endif %}
 
 
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+  </div>
+</div>
+
+<br><br>
+
 {% if active %}
-<nav class="nav-dark bg-dark">
+<nav class="nav-secondary bg-secondary">
   <div class="text-center">
-    <b class="text-light fs-2">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</b>
+    <b class="text-light fs-4">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</b>
   </div>
 </nav>
 <br><br>
 {% endif %}
 
 
-<nav class="nav-dark bg-dark">
+<nav class="nav-secondary bg-secondary">
   <div class="text-center">
     <b class="text-light">NEWSLETTERS</b>
   </div>
 </nav>
+<br>
 
 <div class="row">
 {% for post in posts.items %}

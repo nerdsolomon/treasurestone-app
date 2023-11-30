@@ -52,40 +52,5 @@
 </div>
 <br/>
 
-<center>
-<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Password">Change Password</button>
-<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Email">Change Email</button>
-</center>
-
-
-<div class="position-relative">
-  <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Email" style="width: 19em;">
-	<div class="offcanvas-body">
-	<p class="text-center fw-bold">Change Email</p>
-<form method = 'POST'>
-		<input type="hidden" value="email" name="name">
-	{{ form.email(class="form-control", placeholder="Email") }}<br/>
-	{{ form.old_pass(class="form-control", placeholder="Password") }}
-	<br/>
-	<center>{{ form.submit(class="btn btn-secondary") }}</center>
-</form>
-	</div>
-  </div>
-</div>
-
-
-<div class="position-relative">
-  <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Password" style="width: 18em;">
-	<div class="offcanvas-body">
-	<p class="text-center fw-bold">Change Password</p>
-<form method = 'POST'>
-		<input type="hidden" value="password" name="name">
-	{{ form.old_pass(class="form-control", placeholder="Old Password") }}<br/>
-	{{ form.new_pass(class="form-control", placeholder="New Password") }}<br/>
-	<center>{{ form.submit(class="btn btn-secondary") }}</center>
-</form>
-	</div>
-  </div>
-</div>
 
 {% endblock %}
