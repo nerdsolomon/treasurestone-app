@@ -9,9 +9,6 @@
 {% endfor %}
 
 
-
-
-
 {% if session["account"] == "Admin" %}
 	{% if current_user.type == "Admin" %}
 	<div class="sidebar">
@@ -51,6 +48,7 @@
     <b class="text-light fs-2">{{ active.session.session }} Academic Session - {{ active.session.term }} Term</b>
   </div>
 </nav>
+<br><br>
 {% endif %}
 
 
