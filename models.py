@@ -1,20 +1,8 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_login import UserMixin
 from datetime import datetime
+from app import app, db
 
 date = datetime.now()
-
-app = Flask(__name__)
-app.config["SECRET_KEY"] = "hello..."
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = ' postgres://ollbyscmrbpqes:de8f72ca1ac0d7c2353b081b1c65cf822f9de02c5348795e6416ae07bb8c0c66@ec2-3-210-173-88.compute-1.amazonaws.com:5432/d25fcogdiruk10'
-
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-
 
 class Admin(db.Model, UserMixin):
 	id =  db.Column(db.Integer, primary_key = True)

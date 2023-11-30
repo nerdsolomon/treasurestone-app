@@ -1,5 +1,8 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask import render_template, redirect, flash, request, session, url_for, send_file
-from models import app, db, migrate, date, Admin, Timeline, Session, Active, Class, Subject, Exam, Test, Student, CBT, Affective,  Psychomotor, create_model
+from models import date, Admin, Timeline, Session, Active, Class, Subject, Exam, Test, Student, CBT, Affective,  Psychomotor, create_model
 from webform import AdminForm, PostForm, ClassForm, SubjectForm, StudentForm, LoginForm, CBTForm, EditForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, logout_user, current_user, login_required
@@ -9,6 +12,14 @@ import os
 from tabler import frame, frame2, other, other2
 from werkzeug.wrappers import Response
 
+
+app = Flask(__name__)
+app.config["SECRET_KEY"] = "hello..."
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ollbyscmrbpqes:de8f72ca1ac0d7c2353b081b1c65cf822f9de02c5348795e6416ae07bb8c0c66@ec2-3-210-173-88.compute-1.amazonaws.com:5432/d25fcogdiruk10'
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 FILE_FOLDER = "static/files/"
 if not os.path.exists(FILE_FOLDER):
