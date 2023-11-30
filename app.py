@@ -16,7 +16,7 @@ from werkzeug.wrappers import Response
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hello..."
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ollbyscmrbpqes:de8f72ca1ac0d7c2353b081b1c65cf822f9de02c5348795e6416ae07bb8c0c66@ec2-3-210-173-88.compute-1.amazonaws.com:5432/d25fcogdiruk10'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://isbmregfawkhvn:a89e5463f73c018aacd6079b7b6e8bed696af3c602902948c83edec049777c93@ec2-3-210-173-88.compute-1.amazonaws.com:5432/d28vofa4pf0i56'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
