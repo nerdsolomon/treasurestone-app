@@ -2,7 +2,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask import render_template, redirect, flash, request, session, url_for, send_file
-from models import date, Admin, Timeline, Session, Active, Class, Subject, Exam, Test, Student, CBT, Affective,  Psychomotor, create_model
 from webform import AdminForm, PostForm, ClassForm, SubjectForm, StudentForm, LoginForm, CBTForm, EditForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, logout_user, current_user, login_required
@@ -173,12 +172,6 @@ def create_model():
 	with app.app_context():
 		db.create_all()
 		return 'Database model created successfully'
-
-
-
-
-
-
 
 
 choices, answers = [], []
