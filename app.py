@@ -8,7 +8,6 @@ from flask_login import login_user, LoginManager, logout_user, current_user, log
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
-from tabler import frame, frame2, other, other2
 from werkzeug.wrappers import Response
 from flask_login import UserMixin
 from datetime import datetime
