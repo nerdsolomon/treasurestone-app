@@ -64,7 +64,7 @@ class Timeline(db.Model):
 	admin = db.Column(db.String)
 
 
-class Timeline(db.Model):
+class Gallery(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
 	file = db.Column(db.String)
 
