@@ -62,17 +62,17 @@
 
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
-    {% if picts %}
-      {% for pics in picts %}
+    {% for pics in picts %}
+      {% if pics %}
         <div class="carousel-item active">
           <img src="{{ url_for('static',filename='files/' + pics.file) }}" class="d-block w-100" width=300 height=300 alt="...">
         </div>
-      {% endfor %}
-    {% else %}
-    <div class="carousel-item active">
-      <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" alt="...">
-    </div>
-    {% endif %}
+      {% else %}
+      <div class="carousel-item active">
+        <img src="{{ url_for('static',filename='logo.png') }}" class="d-block w-100" alt="...">
+      </div>
+      {% endif %}
+    {% endfor %}
   </div>
 </div>
 
