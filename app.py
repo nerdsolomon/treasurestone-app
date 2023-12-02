@@ -456,28 +456,29 @@ def cbt_question(id):
 
 
 
-@app.route('/result/<int:id>', methods=['POST', 'GET'])
+@app.route('/result', methods=['POST', 'GET'])
 @login_required
-def result(id):
+def result():
+    int_id = request.args["id"]
     try:
         account_type = session.get("account")
 
         if account_type == "Student":
-            psych = other2(id)
-            affect = other(id)
-            results = frame2(id)
+            psych = other2(int_id)
+            affect = other(int_id)
+            results = frame2(int_id)
             return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
                                 tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
                                 affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
 
-        elif account_type == "Admin":
-            sheet = frame(id)
-            room = Class.query.filter_by(id=id).first()
-            students = Student.query.filter_by(class_id=id)
-            test_st = Test.query.filter_by(class_id=id).group_by(Test.student_id)
-            test_sub = Test.query.filter_by(class_id=id).group_by(Test.subject_id)
-            exam_st = Exam.query.filter_by(class_id=id).group_by(Exam.student_id)
-            exam_sub = Exam.query.filter_by(class_id=id).group_by(Exam.subject_id)
+        else:
+            room = Class.query.filter_by(id=int_id).first()
+            students = Student.query.filter_by(class_id=int_id)
+            test_st = Test.query.filter_by(class_id=int_id).group_by(Test.student_id)
+            test_sub = Test.query.filter_by(class_id=int_id).group_by(Test.subject_id)
+            exam_st = Exam.query.filter_by(class_id=int_id).group_by(Exam.student_id)
+            exam_sub = Exam.query.filter_by(class_id=int_id).group_by(Exam.subject_id)
+            sheet = frame(int_id)
 
             if request.method == "POST":
                 try:
@@ -516,7 +517,7 @@ def result(id):
                 except KeyError:
                     flash("Invalid form submission")
 
-                return redirect(url_for('result', id=id))
+                return redirect(url_for('result', id=int_id))
 
             return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub,
                                 exam_st=exam_st, exam_sub=exam_sub, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
