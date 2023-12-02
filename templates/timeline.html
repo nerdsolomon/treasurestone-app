@@ -60,15 +60,22 @@
 
 {% endif %}
 
-  <div class="table-responsive">
-    <div class="row">
-    {% for pict in picts %}
-      <div class="col">
-        <img src="{{ url_for('static',filename='files/'+ pict.file) }}" class="d-block w-50" width=300 height=300 alt="...">
-      </div>
+
+
+
+
+
+
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for a in picts %}
+        <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}" id="slide{{ forloop.counter }}">
+            <img src="{{url_for('static', filename='files/' + a.file )}}" >
+        </div>
     {% endfor %}
-    </div>
   </div>
+</div>
+
   
 <br>
 
