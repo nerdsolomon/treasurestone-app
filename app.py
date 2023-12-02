@@ -543,40 +543,41 @@ def save_sheet(id):
 
 
 
-
-
 @app.route('/', methods=['POST', 'GET'])
 def timeline():
     page = request.args.get('page', 1, type=int)
-    posts = Timeline.query.order_by(-Timeline.id).paginate(page=page, per_page=5)
-    picts = Gallery.query.order_by(-Timeline.id)
+    posts = Timeline.query.order_by(Timeline.id.desc()).paginate(page=page, per_page=5)
+    picts = Gallery.query.order_by(Gallery.id.desc())
     form = PostForm()
+
     if request.method == "POST":
-        action_type = request.form["name"]
+        action_type = request.form.get("name")
 
         if action_type == "news":
-        	try:
+            try:
                 if form.file.data:
                     file = form.file.data
                     if file and allowed_file(file.filename):
                         file_name = str(uuid.uuid1()) + "-" + secure_filename(file.filename)
-                    	file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
-                    	file.save(file_path)
-                    	post = Timeline(content=form.content.data, file=file_name, headline=form.headline.data, admin=current_user.username)
-                    	store(post)
+                        file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
+                        file.save(file_path)
+                        post = Timeline(content=form.content.data, file=file_name, headline=form.headline.data, admin=current_user.username)
+                        store(post)
                     else:
-                    	flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
-            	else:
-                	post = Timeline(content=form.content.data, file=form.file.data.read(), headline=form.headline.data, admin=current_user.username)
-                	store(post)
+                        flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
+                else:
+                    post = Timeline(content=form.content.data, headline=form.headline.data, admin=current_user.username)
+                    store(post)
+
                 flash("Post added successfully.")
-                
-        	except Exception as e:
-            	flash("An error occurred while adding the post: {}".format(str(e)))
-        	return redirect(url_for('timeline'))
+
+            except Exception as e:
+                flash("An error occurred while adding the post: {}".format(str(e)))
+
+            return redirect(url_for('timeline'))
 
         elif action_type == "gallery":
-        	try:
+            try:
                 file = form.file.data
                 if file and allowed_file(file.filename):
                     file_name = str(uuid.uuid1()) + "-" + secure_filename(file.filename)
@@ -584,14 +585,17 @@ def timeline():
                     file.save(file_path)
                     post = Gallery(file=file_name)
                     store(post)
+                    flash("Picture added successfully.")
                 else:
                     flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
-            	
-            	flash("Picture added successfully.")
-        	except Exception as e:
-            	flash("An error occurred while adding the post: {}".format(str(e)))
-        	return redirect(url_for('timeline'))	
+
+            except Exception as e:
+                flash("An error occurred while adding the picture: {}".format(str(e)))
+
+            return redirect(url_for('timeline'))
+
     return render_template('timeline.html', posts=posts, picts=picts, form=form)
+
 
 
 					
