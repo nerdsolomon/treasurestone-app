@@ -211,18 +211,17 @@ def frame(id):
                     "Exam": [i.score for i in exam_data]}
 
     result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content), on=["Name", "Surname", "Subject"])
-    #result["Total"] = result["Exam"].add(pd.Series(result["Test"]))
-    #result["Student"] = result[["Name","Surname"]].agg(" ".join, axis=1)
-    #result.drop(columns=["Name", "Surname"], inplace=True)
+    result = result.assign(Total=result["Exam"].add(pd.Series(result["Test"])), Student=result[["Name","Surname"]].agg(" ".join, axis=1))
+    result.drop(columns=["Name", "Surname"], inplace=True)
 
-    #new = result.pivot("Student", "Subject")
+    new = result.pivot("Student", "Subject")
 
     student_comments = {i.student.id: (i.comment, i.remark) for i in student_data}
-    result["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
-    result["Sum Total"] = result.groupby("Surname")["Test", "Exam"].sum().sum(axis=1)
-    #result["Average"] = result["Sum Total"] / len(exam_data)
+    new["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
+    new["Sum Total"] = result.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
+    new["Average"] = new["Sum Total"] / len(exam_data)
 
-    news = result.swaplevel(0, 1, 1).sort_index(1)
+    news = new.swaplevel(0, 1, 1).sort_index(1)
     return news
 
 
@@ -460,71 +459,71 @@ def cbt_question(id):
 @app.route('/result/<int:id>', methods=['POST', 'GET'])
 @login_required
 def result(id):
-    #try:
-    account_type = session.get("account")
+    try:
+        account_type = session.get("account")
 
-    if account_type == "Student":
-        psych = other2(id)
-        affect = other(id)
-        results = frame2(id)
-        return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
+        if account_type == "Student":
+            psych = other2(id)
+            affect = other(id)
+            results = frame2(id)
+            return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
                                 tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
                                 affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
 
-    else:
-        room = Class.query.filter_by(id=id).first()
-        students = Student.query.filter_by(class_id=id)
-        test_st = Test.query.filter_by(class_id=id).group_by(Test.student_id)
-        test_sub = Test.query.filter_by(class_id=id).group_by(Test.subject_id)
-        exam_st = Exam.query.filter_by(class_id=id).group_by(Exam.student_id)
-        exam_sub = Exam.query.filter_by(class_id=id).group_by(Exam.subject_id)
-        broadsheet = frame(id)
+        elif account_type == "Admin":
+            sheet = frame(id)
+            room = Class.query.filter_by(id=id).first()
+            students = Student.query.filter_by(class_id=id)
+            test_st = Test.query.filter_by(class_id=id).group_by(Test.student_id)
+            test_sub = Test.query.filter_by(class_id=id).group_by(Test.subject_id)
+            exam_st = Exam.query.filter_by(class_id=id).group_by(Exam.student_id)
+            exam_sub = Exam.query.filter_by(class_id=id).group_by(Exam.subject_id)
 
-        if request.method == "POST":
-            try:
-                form_type = request.form["name"]
+            if request.method == "POST":
+                try:
+                    form_type = request.form["name"]
 
-                if form_type == "comment" or form_type == "remark":
-                    student_id = request.form["student"]
-                    student = Student.query.filter_by(id=student_id).first()
+                    if form_type == "comment" or form_type == "remark":
+                        student_id = request.form["student"]
+                        student = Student.query.filter_by(id=student_id).first()
 
-                    if form_type == "comment":
-                        student.comment = request.form["comment"]
-                    elif form_type == "remark":
-                        student.remark = request.form["remark"]
+                        if form_type == "comment":
+                            student.comment = request.form["comment"]
+                        elif form_type == "remark":
+                            student.remark = request.form["remark"]
 
-                    if not student_id or not request.form[form_type]:
-                        flash("You must fill all forms")
-                    else:
-                        store(student)
-
-                elif form_type == "test" or form_type == "exam":
-                    student_id = request.form["student"]
-                    subject_id = request.form["subject"]
-
-                    if form_type == "test":
-                        test = Test.query.filter_by(subject_id=subject_id, student_id=student_id).first()
-                        test.score = request.form["score"]
-                    elif form_type == "exam":
-                        exam = Exam.query.filter_by(subject_id=subject_id, student_id=student_id).first()
-                        exam.score = request.form["score"]
-
-                    if not student_id or not subject_id or not request.form["score"]:
+                        if not student_id or not request.form[form_type]:
                             flash("You must fill all forms")
-                    else:
-                        store(test) if form_type == "test" else store(exam)
+                        else:
+                            store(student)
 
-            except KeyError:
-                flash("Invalid form submission")
+                    elif form_type == "test" or form_type == "exam":
+                        student_id = request.form["student"]
+                        subject_id = request.form["subject"]
 
-            return redirect(url_for('result', id=id))
+                        if form_type == "test":
+                            test = Test.query.filter_by(subject_id=subject_id, student_id=student_id).first()
+                            test.score = request.form["score"]
+                        elif form_type == "exam":
+                            exam = Exam.query.filter_by(subject_id=subject_id, student_id=student_id).first()
+                            exam.score = request.form["score"]
 
-        return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub,
-                                exam_st=exam_st, exam_sub=exam_sub, tables=[broadsheet.to_html(classes="table table-hover table-sm table-bordered")])
+                        if not student_id or not subject_id or not request.form["score"]:
+                            flash("You must fill all forms")
+                        else:
+                            store(test) if form_type == "test" else store(exam)
 
-    #except:
-    #    flash("An error occurred.")
-    #    return redirect("/")
+                except KeyError:
+                    flash("Invalid form submission")
+
+                return redirect(url_for('result', id=id))
+
+            return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub,
+                                exam_st=exam_st, exam_sub=exam_sub, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
+
+    except:
+        flash("An error occurred.")
+        return redirect("/")
 
 
 
