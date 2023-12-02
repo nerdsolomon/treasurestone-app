@@ -219,8 +219,8 @@ def frame(id):
 
     student_comments = {i.student.id: (i.comment, i.remark) for i in student_data}
     result["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
-    result["Sum Total"] = result.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
-    result["Average"] = result["Sum Total"] / len(exam_data)
+    result["Sum Total"] = result.groupby("Surname")["Test", "Exam"].sum().sum(axis=1)
+    #result["Average"] = result["Sum Total"] / len(exam_data)
 
     news = result.swaplevel(0, 1, 1).sort_index(1)
     return news
