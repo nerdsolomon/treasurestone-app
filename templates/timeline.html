@@ -64,7 +64,7 @@
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for a in picts %}
-        <div class="carousel-item {% if picts.index(a) == 0 %}active{% endif %}">
+        <div class="carousel-item {% if a.id == picts.first().id %}active{% endif %}">
             <img src="{{'static/files/' + a.file}}" >
         </div>
     {% endfor %}
