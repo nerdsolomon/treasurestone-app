@@ -61,16 +61,11 @@
 {% endif %}
 
 
-
-
-
-
-
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for a in picts %}
         <div class="carousel-item {% if a.id == 1 %}active{% endif %}">
-            <img src="{{url_for('static', filename='files/' + a.file )}}" >
+            <img src="{{'static/files/' + a.file )}}" >
         </div>
     {% endfor %}
   </div>
