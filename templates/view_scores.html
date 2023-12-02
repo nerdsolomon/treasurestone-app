@@ -31,7 +31,7 @@
 	<div class="col">
 	<input type="hidden" value="test" name="name">
 	<select class="form-select form-select-sm" name="student">
-    	<option selected>Student</option>
+    	<option >Student</option>
 		{% for student in students %}
    	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
    	 {% endfor %}
@@ -74,7 +74,7 @@
 	<div class="col">
 	<input type="hidden" value="exam" name="name">
 	<select class="form-select form-select-sm" name="student">
-    	<option selected>Student</option>
+    	<option >Student</option>
 		{% for student in students %}
    	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
    	 {% endfor %}

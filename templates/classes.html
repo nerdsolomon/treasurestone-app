@@ -51,7 +51,7 @@
 		<input type="hidden" value="admins" name="name">
 		<input type="hidden" value="{{ class.id }}" name="class">	
 		<select class="form-select form-select-sm" name='admin'>
-			<option selected>Teacher</option>
+			<option >Teacher</option>
 			{% for admin in admins %}
 				{% if admin.type == "Tutor" %}
 		   	<option value="{{ admin.id }}">{{ admin.username }}</option>
