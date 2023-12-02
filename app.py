@@ -198,6 +198,8 @@ def frame(id):
     test_data = Test.query.filter_by(class_id=id).order_by(Test.student_id).all()
     exam_data = Exam.query.filter_by(class_id=id).order_by(Exam.student_id).all()
 
+    student_data = Student.query.filter_by(class_id=id).order_by(Student.id).all()
+
     test_content = {"Name": [i.student.first_name for i in test_data],
                     "Surname": [i.student.last_name for i in test_data],
                     "Subject": [i.subject.title for i in test_data],
@@ -208,22 +210,20 @@ def frame(id):
                     "Subject": [i.subject.title for i in exam_data],
                     "Exam": [i.score for i in exam_data]}
 
-    test_df = pd.DataFrame(test_content)
-    exam_df = pd.DataFrame(exam_content)
-
-    result = test_df.merge(exam_df)
-    result["Total"] = result["Exam"] + result["Test"]
-    result["Student"] = result["Name"] + " " + result["Surname"]
+    result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content), on=["Name", "Surname", "Subject"])
+    result = result.assign(Total=result["Exam"] + result["Test"], Student=result["Name"] + " " + result["Surname"])
     result.drop(columns=["Name", "Surname"], inplace=True)
 
     new = result.pivot("Student", "Subject")
-    new["Comment"] = [i.comment for i in Student.query.filter_by(class_id=id).order_by(Student.id)]
-    new["Remark"] = [i.remark for i in Student.query.filter_by(class_id=id).order_by(Student.id)]
+
+    student_comments = {i.student.id: (i.comment, i.remark) for i in student_data}
+    new["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
     new["Sum Total"] = result.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
     new["Average"] = new["Sum Total"] / len(exam_data)
 
     news = new.swaplevel(0, 1, 1).sort_index(1)
     return news
+
 
 
 

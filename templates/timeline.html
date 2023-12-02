@@ -19,9 +19,7 @@
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Addpost" aria-expanded="false" style="background-color: #f1f1f1;" aria-controls="Addpost">Add Content</button>
     </span>
     <div id="Addpost" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample" style="background-color: #f1f1f1;"><br>
-    <div class="card-header">
-      <b>Add Post To Newsletter</b>
-    </div>
+    <h5>Add Post To Newsletter</h5>
     <form method = 'POST' enctype="multipart/form-data">
 	   {{ form.hidden_tag() }}
       <input type="hidden" value="news" name="name">
@@ -29,11 +27,10 @@
 	   {{ form.file(class='form-control form-control-sm') }}<br/>
 	   {{ form.content(class='form-control form-control-sm', placeholder= "write a post...", rows="6") }}<br/>
 	   <center>{{ form.submit(class='form-control btn-sm btn-secondary') }}</center>
-	  </form><br>
+	  </form><br><br>
 
-    <div class="card-header">
-      <b>Add Picture To Gallery</b>
-    </div>
+    <h5>Add Picture To Gallery</h5>
+    
     <form method = 'POST' enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       <input type="hidden" value="gallery" name="name">

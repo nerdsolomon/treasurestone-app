@@ -59,7 +59,7 @@ body {
 
 /* The side navigation menu */
 .sidebar {
-  margin-left: 620px;
+  margin-left: 700px;
   padding: 0.5rem 0.5rem;
   overflow-y: auto;
   width: 300px;
@@ -82,7 +82,7 @@ body {
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
   margin: 0;
-  width: 620px;
+  width: 700px;
   padding: 1px 10px;
 }
 
