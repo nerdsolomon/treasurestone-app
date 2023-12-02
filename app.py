@@ -211,7 +211,7 @@ def frame(id):
                     "Exam": [i.score for i in exam_data]}
 
     result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content), on=["Name", "Surname", "Subject"])
-    result = result.assign(Total=result["Exam"] + result["Test"], Student=result["Name"] + " " + result["Surname"])
+    result = result.assign(Total=result["Exam"].add(pd.Series(result["Test"])), Student=result[["Name","Surname"]].agg(" ".join, axis=1))
     result.drop(columns=["Name", "Surname"], inplace=True)
 
     new = result.pivot("Student", "Subject")

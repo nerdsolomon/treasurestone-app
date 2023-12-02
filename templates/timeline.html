@@ -63,7 +63,7 @@
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for pics in picts %}
-      {% if pics %}
+      {% if pics != None %}
         <div class="carousel-item active">
           <img src="{{ url_for('static',filename='files/' + pics.file) }}" class="d-block w-100" width=300 height=300 alt="...">
         </div>
