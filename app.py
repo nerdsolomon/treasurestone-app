@@ -556,21 +556,21 @@ def timeline():
 
         if action_type == "news":
         	try:
-            	if form.file.data:
-                	file = form.file.data
-                	if file and allowed_file(file.filename):
-                    	file_name = str(uuid.uuid1()) + "-" + secure_filename(file.filename)
+                if form.file.data:
+                    file = form.file.data
+                    if file and allowed_file(file.filename):
+                        file_name = str(uuid.uuid1()) + "-" + secure_filename(file.filename)
                     	file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
                     	file.save(file_path)
                     	post = Timeline(content=form.content.data, file=file_name, headline=form.headline.data, admin=current_user.username)
                     	store(post)
-                	else:
+                    else:
                     	flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
             	else:
                 	post = Timeline(content=form.content.data, file=form.file.data.read(), headline=form.headline.data, admin=current_user.username)
                 	store(post)
-
-            	flash("Post added successfully.")
+                flash("Post added successfully.")
+                
         	except Exception as e:
             	flash("An error occurred while adding the post: {}".format(str(e)))
         	return redirect(url_for('timeline'))
