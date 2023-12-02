@@ -212,10 +212,10 @@ def frame(id):
 
     result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content), on=["Name", "Surname", "Subject"])
     #result["Total"] = result["Exam"].add(pd.Series(result["Test"]))
-    result["Student"] = result[["Name","Surname"]].agg(" ".join, axis=1)
-    result.drop(columns=["Name", "Surname"], inplace=True)
+    #result["Student"] = result[["Name","Surname"]].agg(" ".join, axis=1)
+    #result.drop(columns=["Name", "Surname"], inplace=True)
 
-    new = result.pivot("Student", "Subject")
+    #new = result.pivot("Student", "Subject")
 
     student_comments = {i.student.id: (i.comment, i.remark) for i in student_data}
     new["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
