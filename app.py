@@ -211,7 +211,8 @@ def frame(id):
                     "Exam": [i.score for i in exam_data]}
 
     result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content), on=["Name", "Surname", "Subject"])
-    result = result.assign(Total=result["Exam"].add(pd.Series(result["Test"])), Student=result[["Name","Surname"]].agg(" ".join, axis=1))
+    #result["Total"] = result["Exam"].add(pd.Series(result["Test"]))
+    result["Student"] = result[["Name","Surname"]].agg(" ".join, axis=1)
     result.drop(columns=["Name", "Surname"], inplace=True)
 
     new = result.pivot("Student", "Subject")
@@ -471,13 +472,13 @@ def result(id):
                                 affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
 
     else:
-        sheet = frame(id)
         room = Class.query.filter_by(id=id).first()
         students = Student.query.filter_by(class_id=id)
         test_st = Test.query.filter_by(class_id=id).group_by(Test.student_id)
         test_sub = Test.query.filter_by(class_id=id).group_by(Test.subject_id)
         exam_st = Exam.query.filter_by(class_id=id).group_by(Exam.student_id)
         exam_sub = Exam.query.filter_by(class_id=id).group_by(Exam.subject_id)
+        broadsheet = frame(id)
 
         if request.method == "POST":
             try:
@@ -519,7 +520,7 @@ def result(id):
             return redirect(url_for('result', id=id))
 
         return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub,
-                                exam_st=exam_st, exam_sub=exam_sub, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
+                                exam_st=exam_st, exam_sub=exam_sub, tables=[broadsheet.to_html(classes="table table-hover table-sm table-bordered")])
 
     #except:
     #    flash("An error occurred.")
