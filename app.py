@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask import render_template, redirect, flash, request, session, url_for, send_file,  abort, send_from_directory,
+from flask import render_template, redirect, flash, request, session, url_for, send_file, abort, send_from_directory
 from webform import AdminForm, PostForm, ClassForm, SubjectForm, StudentForm, LoginForm, CBTForm, EditForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, LoginManager, logout_user, current_user, login_required
