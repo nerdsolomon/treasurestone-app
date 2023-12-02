@@ -218,11 +218,11 @@ def frame(id):
     #new = result.pivot("Student", "Subject")
 
     student_comments = {i.student.id: (i.comment, i.remark) for i in student_data}
-    new["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
-    new["Sum Total"] = result.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
-    new["Average"] = new["Sum Total"] / len(exam_data)
+    result["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
+    result["Sum Total"] = result.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
+    result["Average"] = result["Sum Total"] / len(exam_data)
 
-    news = new.swaplevel(0, 1, 1).sort_index(1)
+    news = result.swaplevel(0, 1, 1).sort_index(1)
     return news
 
 
