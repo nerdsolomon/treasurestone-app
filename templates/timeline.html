@@ -65,8 +65,8 @@
   <div class="carousel-inner">
     {% for pic in picts %}
         <div class="carousel-item {% if pic.id == picts.first().id %}active{% endif %}">
-          <img src="{{ url_for('static', filename='files/'+pic.file)}}" >
-          <a class="btn btn-danger"href="{{ url_for('del_gallery', id=pic.id) }}">Delete</a>
+          <img src="{{ url_for('static', filename=pic.file)}}" ><br>
+          <a class="btn btn-sm text-danger"href="{{ url_for('del_gallery', id=pic.id) }}">Delete</a>
         </div>
     {% endfor %}
   </div>
@@ -86,14 +86,14 @@
 {% for post in posts.items %}
 <div class="col-6">
 <div class="card">
-	<a href="{{url_for('post', id= post.id)}}" class="stretched-link"></a>
+	<a href="{{url_for('post', id=post.id)}}" class="stretched-link"></a>
 	<div class="card-body">
 	{% if post.headline %}
 		<span class="fs-5">{{ post.headline }}</span><br>
 	{% endif %}
 		<small class="text-secondary">{{ post.time }}</small>
 	{% if post.file %}
-		<img src="{{url_for('static', filename='files/'+post.file )}}" class="card-img-bottom">
+		<img src="{{url_for('static', filename=post.file )}}" class="card-img-bottom">
 	{% endif %}
 	</div>
 </div><br>

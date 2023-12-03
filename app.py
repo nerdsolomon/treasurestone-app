@@ -23,9 +23,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://beqmdjbioqowdx:31f36efcea9
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-FILE_FOLDER = "static/files/"
-if not os.path.exists(FILE_FOLDER):
-	os.makedirs(FILE_FOLDER)
+FILE_FOLDER = "static"
+#if not os.path.exists(FILE_FOLDER):
+#	os.makedirs(FILE_FOLDER)
 	
 app.config["FILE_FOLDER"] = FILE_FOLDER
 
@@ -195,32 +195,24 @@ def crop_image(img):
 
 
 def frame(id):
-    test_data = Test.query.filter_by(class_id=id).order_by(Test.student_id).all()
-    exam_data = Exam.query.filter_by(class_id=id).order_by(Exam.student_id).all()
     student_data = Student.query.filter_by(class_id=id).order_by(Student.id).all()
-
-    test_content = {"Name": [i.student.first_name for i in test_data],
-                    "Surname": [i.student.last_name for i in test_data],
-                    "Subject": [i.subject.title for i in test_data],
-                    "Test": [i.score for i in test_data]}
-
-    exam_content = {"Name": [i.student.first_name for i in exam_data],
-                    "Surname": [i.student.last_name for i in exam_data],
-                    "Subject": [i.subject.title for i in exam_data],
-                    "Exam": [i.score for i in exam_data]}
-
-    result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content))
-    results = result.copy()
-    results = results.assign(Total=results["Exam"].add(pd.Series(results["Test"])), Student=results[["Name","Surname"]].agg(" ".join, axis=1))
-    results.drop(columns=["Name", "Surname"], inplace=True)
-
-    new = result.pivot("Student", "Subject")
-
-    new["Added Total"] = results.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
-    new["Average"] = new["Added Total"] / len(exam_data)
-    new["Remark"] = [i.remark for i in student_data]
-    new["Comment"] = [i.comment for i in student_data]
+    student_info = db.session.query(Student, Exam, Test).filter_by(class_id=id).order_by(Student.id).filter(Exam.subject_id == Test.subject_id).all()
     
+    columns = ["Student", "Subject", "Exam", "Test", "Total"]
+    df = pd.DataFrame(columns=columns)
+    
+    for x, student in zip(range(len(student_info)), student_info):
+        df.loc[x, ["Student"]] = student[0].first_name + " " + student[0].last_name
+        df.loc[x, ["Subject"]] = student[1].subject.title
+        df.loc[x, ["Exam"]] = student[1].score
+        df.loc[x, ["Test"]] = student[2].score
+        df.loc[x, ["Total"]] = student[1].score + student[2].score
+
+    new = df.pivot("Student", "Subject")
+    new["Added Total"] = df.groupby("Student")[["Test", "Exam"]].sum().sum(axis=1)
+    new["Average"] = new["Added Total"] / len(student_info)
+    new["Comment"] = [i.comment for i in student_data]
+    new["Remark"] = [i.remark for i in student_data]
     news = new.swaplevel(0, 1, 1).sort_index(1)
     return news
 
@@ -456,52 +448,48 @@ def cbt_question(id):
 
 
 
-@app.route('/result', methods=['POST', 'GET'])
+@app.route('/result/<int:id>', methods=['POST', 'GET'])
 @login_required
-def result():
-    int_id = request.args["id"]
+def result(id):
     try:
         account_type = session.get("account")
-
+    
         if account_type == "Student":
-            psych = other2(int_id)
-            affect = other(int_id)
-            results = frame2(int_id)
-            return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
-                                tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],
-                                affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
-
+            psych = other2(id)
+            affect = other(id)
+            results = frame2(id)
+            return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)], tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
+    
         else:
-            room = Class.query.filter_by(id=int_id).first()
-            students = Student.query.filter_by(class_id=int_id)
-            test_st = Test.query.filter_by(class_id=int_id).group_by(Test.student_id)
-            test_sub = Test.query.filter_by(class_id=int_id).group_by(Test.subject_id)
-            exam_st = Exam.query.filter_by(class_id=int_id).group_by(Exam.student_id)
-            exam_sub = Exam.query.filter_by(class_id=int_id).group_by(Exam.subject_id)
-            sheet = frame(int_id)
-
+            sheet = frame(id)
+            room = Class.query.filter_by(id=id).first()
+            students = Student.query.filter_by(class_id=id)
+            test_st = Test.query.filter_by(class_id=id).group_by(Test.student_id)
+            test_sub = Test.query.filter_by(class_id=id).group_by(Test.subject_id)
+            exam_st = Exam.query.filter_by(class_id=id).group_by(Exam.student_id)
+            exam_sub = Exam.query.filter_by(class_id=id).group_by(Exam.subject_id)
+        
             if request.method == "POST":
                 try:
                     form_type = request.form["name"]
-
                     if form_type == "comment" or form_type == "remark":
                         student_id = request.form["student"]
                         student = Student.query.filter_by(id=student_id).first()
-
+                    
                         if form_type == "comment":
                             student.comment = request.form["comment"]
                         elif form_type == "remark":
                             student.remark = request.form["remark"]
-
+                        
                         if not student_id or not request.form[form_type]:
                             flash("You must fill all forms")
                         else:
                             store(student)
-
+                
                     elif form_type == "test" or form_type == "exam":
                         student_id = request.form["student"]
                         subject_id = request.form["subject"]
-
+                    
                         if form_type == "test":
                             test = Test.query.filter_by(subject_id=subject_id, student_id=student_id).first()
                             test.score = request.form["score"]
@@ -513,17 +501,16 @@ def result():
                             flash("You must fill all forms")
                         else:
                             store(test) if form_type == "test" else store(exam)
-
+            
                 except KeyError:
                     flash("Invalid form submission")
-
-                return redirect(url_for('result', id=int_id))
-
-            return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub,
-                                exam_st=exam_st, exam_sub=exam_sub, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
+                
+                return redirect(url_for('result', id=id))
+        
+            return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub, exam_st=exam_st, exam_sub=exam_sub, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
 
     except:
-        flash("An error occurred.")
+        flash("All Student must have a score for every subject.")
         return redirect("/")
 
 
@@ -907,8 +894,11 @@ def psych_affect(id):
                     public=request.form["public"],
                     sport=request.form["sport"]
                 )
-                store(new_psych)
-                flash("Psychomotor grades added successfully!")
+                if handle or draw or speech or write or public or sport == "":
+                    flash("Must fill all forms!")
+                else:
+                    store(new_psych)
+                    flash("Psychomotor grades added successfully!")
 
         elif action_type == "affect":
             existing_affect = Affective.query.filter_by(student_id=student_id).first()
@@ -926,8 +916,11 @@ def psych_affect(id):
                     obey=request.form["obey"],
                     rely=request.form["rely"]
                 )
-                store(new_affect)
-                flash("Affective grades added successfully!")
+                if attentive or punctual or honest or neat or polite or calm or obey or rely == "":
+                    flash("Must fill all forms!")
+                else:
+                    store(new_affect)
+                    flash("Affective grades added successfully!")
 
     return render_template("psych_affect.html", room=room, students=students)
 

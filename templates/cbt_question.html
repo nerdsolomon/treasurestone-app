@@ -64,7 +64,7 @@
 		{% for cbt in cbts %}
 		<div class="list-group-item">
 		{% if cbt.file %}
-		<img src="{{url_for('static', filename='files/' + cbt.file )}}" class="object-fit-cover" width="100%"><br/>
+		<img src="{{url_for('static', filename=cbt.file )}}" class="object-fit-cover" width="100%"><br/>
 		{% endif %}
 		
 		<span style="white-space:pre-wrap !important;">{{ cbt.question }}</span><br/>
