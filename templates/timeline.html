@@ -63,9 +63,10 @@
 
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-inner">
-    {% for a in picts %}
-        <div class="carousel-item {% if a.id == picts.first().id %}active{% endif %}">
-            <img src="{{'static/files/' + a.file}}" >
+    {% for pic in picts %}
+        <div class="carousel-item {% if pic.id == picts.first().id %}active{% endif %}">
+          <img src="{{ url_for('static', filename='files/'+pic.file)}}" >
+          <a class="btn btn-danger"href="{{ url_for('del_gallery', id=pic.id) }}">Delete</a>
         </div>
     {% endfor %}
   </div>
@@ -92,7 +93,7 @@
 	{% endif %}
 		<small class="text-secondary">{{ post.time }}</small>
 	{% if post.file %}
-		<img src="{{url_for('static', filename='files/' + post.file )}}" class="card-img-bottom">
+		<img src="{{url_for('static', filename='files/'+post.file )}}" class="card-img-bottom">
 	{% endif %}
 	</div>
 </div><br>

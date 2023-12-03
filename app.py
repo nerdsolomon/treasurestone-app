@@ -197,7 +197,6 @@ def crop_image(img):
 def frame(id):
     test_data = Test.query.filter_by(class_id=id).order_by(Test.student_id).all()
     exam_data = Exam.query.filter_by(class_id=id).order_by(Exam.student_id).all()
-
     student_data = Student.query.filter_by(class_id=id).order_by(Student.id).all()
 
     test_content = {"Name": [i.student.first_name for i in test_data],
@@ -210,17 +209,18 @@ def frame(id):
                     "Subject": [i.subject.title for i in exam_data],
                     "Exam": [i.score for i in exam_data]}
 
-    result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content), on=["Name", "Surname", "Subject"])
-    result = result.assign(Total=result["Exam"].add(pd.Series(result["Test"])), Student=result[["Name","Surname"]].agg(" ".join, axis=1))
-    result.drop(columns=["Name", "Surname"], inplace=True)
+    result = pd.DataFrame(test_content).merge(pd.DataFrame(exam_content))
+    results = result.copy()
+    results = results.assign(Total=results["Exam"].add(pd.Series(results["Test"])), Student=results[["Name","Surname"]].agg(" ".join, axis=1))
+    results.drop(columns=["Name", "Surname"], inplace=True)
 
     new = result.pivot("Student", "Subject")
 
-    student_comments = {i.student.id: (i.comment, i.remark) for i in student_data}
-    new["Comment"] = [student_comments[i] for i in range(1, len(student_data) + 1)]
-    new["Sum Total"] = result.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
-    new["Average"] = new["Sum Total"] / len(exam_data)
-
+    new["Added Total"] = results.groupby("Student")["Test", "Exam"].sum().sum(axis=1)
+    new["Average"] = new["Added Total"] / len(exam_data)
+    new["Remark"] = [i.remark for i in student_data]
+    new["Comment"] = [i.comment for i in student_data]
+    
     news = new.swaplevel(0, 1, 1).sort_index(1)
     return news
 
@@ -433,7 +433,7 @@ def cbt_question(id):
                 if file and allowed_file(file.filename):
                     file_name = secure_filename(file.filename)
                     file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
-                    file.save(file_path)
+                    crop_image(file.read()).save(file_path)
                     cbt = CBT(question=form.question.data, answer=form.answer.data,
                               option1=form.option1.data, option2=form.option2.data, option3=form.option3.data,
                               file=file_name, subject_id=id, type=request.form['type'])
@@ -536,7 +536,7 @@ def save_sheet(id):
     if class_obj:
         sheet_data = frame(id)
         response = Response(sheet_data.to_csv(), content_type="text/csv")
-        response.headers["Content-Disposition"] = f"attachment; filename={class_obj.title}_Broadsheet.csv"
+        response.headers["Content-Disposition"] = f"attachment; filename={class_obj.title} Broadsheet.csv"
         return response
     else:
         abort(404)  # Adjust the response code according to your project's needs
@@ -560,7 +560,7 @@ def timeline():
                     if file and allowed_file(file.filename):
                         file_name = str(uuid.uuid1()) + "-" + secure_filename(file.filename)
                         file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
-                        file.save(file_path)
+                        crop_image(file.read()).save(file_path)
                         post = Timeline(content=form.content.data, file=file_name, headline=form.headline.data, admin=current_user.username)
                         store(post)
                     else:
@@ -582,7 +582,7 @@ def timeline():
                 if file and allowed_file(file.filename):
                     file_name = str(uuid.uuid1()) + "-" + secure_filename(file.filename)
                     file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
-                    file.save(file_path)
+                    crop_image(file.read()).save(file_path)
                     post = Gallery(file=file_name)
                     store(post)
                     flash("Picture added successfully.")
@@ -1031,6 +1031,23 @@ def del_subject(id, num):
             except FileNotFoundError:
                 flash("File not found.")
         rem(subject)
+        flash("Subject deletion successful.")
+    else:
+        flash("Subject not found.")
+    return redirect(url_for("class_", id=num))
+
+
+@app.route('/del-gallery/<int:id>/<int:num>')
+@login_required
+def del_subject(id, num):
+    gallery = Gallery.query.get(id)
+    if gallery:
+        if gallery.file:
+            try:
+                os.remove(os.path.join(app.config["FILE_FOLDER"], gallery.file))
+            except FileNotFoundError:
+                flash("File not found.")
+        rem(gallery)
         flash("Subject deletion successful.")
     else:
         flash("Subject not found.")
