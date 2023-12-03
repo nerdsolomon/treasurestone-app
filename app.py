@@ -196,7 +196,11 @@ def crop_image(img):
 
 def frame(id):
     student_data = Student.query.filter_by(class_id=id).order_by(Student.id).all()
-    student_info = db.session.query(Student, Exam, Test).filter_by(class_id=id).order_by(Student.id).filter(Exam.subject_id == Test.subject_id).all()
+    student_info = db.session.query(Student, Exam, Test)\
+    .join(Exam, Student.id == Exam.student_id)\
+    .join(Test, Student.id == Test.student_id)\
+    .filter_by(class_id=id).order_by(Student.id)\
+    .filter(Exam.subject_id == Test.subject_id).all()
     
     columns = ["Student", "Subject", "Exam", "Test", "Total"]
     df = pd.DataFrame(columns=columns)
