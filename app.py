@@ -1037,9 +1037,9 @@ def del_subject(id, num):
     return redirect(url_for("class_", id=num))
 
 
-@app.route('/del-gallery/<int:id>/<int:num>')
+@app.route('/del-gallery/<int:id>')
 @login_required
-def del_subject(id, num):
+def del_gallery(id):
     gallery = Gallery.query.get(id)
     if gallery:
         if gallery.file:
@@ -1048,10 +1048,10 @@ def del_subject(id, num):
             except FileNotFoundError:
                 flash("File not found.")
         rem(gallery)
-        flash("Subject deletion successful.")
+        flash("Picture deletion successful.")
     else:
-        flash("Subject not found.")
-    return redirect(url_for("class_", id=num))
+        flash("Picture not found.")
+    return redirect(url_for("timeline"))
 
 
 
