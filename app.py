@@ -468,10 +468,6 @@ def result(id):
         sheet = frame(id)
         room = Class.query.filter_by(id=id).first()
         students = Student.query.filter_by(class_id=id)
-        test_st = db.session.query(Test, db.func.avg(Test.student_id)).filter_by(class_id=id).group_by(Test.student_id)
-        test_sub = db.session.query(Test, db.func.avg(Test.subject_id)).filter_by(class_id=id).group_by(Test.subject_id)
-        exam_st = db.session.query(Exam, db.func.avg(Exam.student_id)).filter_by(class_id=id).group_by(Exam.student_id)
-        exam_sub = db.session.query(Exam, db.func.avg(Exam.subject_id)).filter_by(class_id=id).group_by(Exam.subject_id)
         
         if request.method == "POST":
             try:
@@ -489,29 +485,13 @@ def result(id):
                         flash("You must fill all forms")
                     else:
                         store(student)
-                
-                elif form_type == "test" or form_type == "exam":
-                    student_id = request.form["student"]
-                    subject_id = request.form["subject"]
-                    
-                    if form_type == "test":
-                        test = Test.query.filter_by(subject_id=subject_id, student_id=student_id).first()
-                        test.score = request.form["score"]
-                    elif form_type == "exam":
-                        exam = Exam.query.filter_by(subject_id=subject_id, student_id=student_id).first()
-                        exam.score = request.form["score"]
-
-                    if not student_id or not subject_id or not request.form["score"]:
-                        flash("You must fill all forms")
-                    else:
-                        store(test) if form_type == "test" else store(exam)
             
             except KeyError:
                 flash("Invalid form submission")
                 
             return redirect(url_for('result', id=id))
         
-        return render_template("result.html", students=students, room=room, test_st=test_st, test_sub=test_sub, exam_st=exam_st, exam_sub=exam_sub, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
+        return render_template("result.html", students=students, room=room, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
 
     #except:
         #flash("All Student must have a score for every subject.")
