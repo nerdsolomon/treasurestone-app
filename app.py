@@ -468,10 +468,10 @@ def result(id):
         sheet = frame(id)
         room = Class.query.filter_by(id=id).first()
         students = Student.query.filter_by(class_id=id)
-        test_st = db.session.query(Test.subject_id, db.func.avg(Test.score)).filter_by(class_id=id).group_by(Test.student_id)
-        test_sub = db.session.query(Test.subject_id, db.func.avg(Test.score)).filter_by(class_id=id).group_by(Test.subject_id)
-        exam_st = db.session.query(Exam.subject_id, db.func.avg(Exam.score)).filter_by(class_id=id).group_by(Exam.student_id)
-        exam_sub = db.session.query(Exam.subject_id, db.func.avg(Exam.score)).filter_by(class_id=id).group_by(Exam.subject_id)
+        test_st = db.session.query(Test.subject_id, db.func.avg(Test.subject_id)).filter_by(class_id=id).group_by(Test.student_id)
+        test_sub = db.session.query(Test.subject_id, db.func.avg(Test.subject_id)).filter_by(class_id=id).group_by(Test.subject_id)
+        exam_st = db.session.query(Exam.subject_id, db.func.avg(Exam.subject_id)).filter_by(class_id=id).group_by(Exam.student_id)
+        exam_sub = db.session.query(Exam.subject_id, db.func.avg(Exam.subject_id)).filter_by(class_id=id).group_by(Exam.subject_id)
         
         if request.method == "POST":
             try:
