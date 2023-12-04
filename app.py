@@ -456,47 +456,47 @@ def cbt_question(id):
 @app.route('/result/<int:id>', methods=['POST', 'GET'])
 @login_required
 def result(id):
-    #try:
-    account_type = session.get("account")
+    try:
+    	account_type = session.get("account")
     
-    if account_type == "Student":
-        psych = other2(id)
-        affect = other(id)
-        results = frame2(id)
-        return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)], tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
+    	if account_type == "Student":
+        	psych = other2(id)
+        	affect = other(id)
+        	results = frame2(id)
+        	return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)], tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
     
-    else:
-        sheet = frame(id)
-        room = Class.query.filter_by(id=id).first()
-        students = Student.query.filter_by(class_id=id)
+    	else:
+        	sheet = frame(id)
+        	room = Class.query.filter_by(id=id).first()
+        	students = Student.query.filter_by(class_id=id)
         
-        if request.method == "POST":
-            try:
-                form_type = request.form["name"]
-                if form_type == "comment" or form_type == "remark":
-                    student_id = request.form["student"]
-                    student = Student.query.filter_by(id=student_id).first()
+        	if request.method == "POST":
+            	try:
+                	form_type = request.form["name"]
+                	if form_type == "comment" or form_type == "remark":
+                    	student_id = request.form["student"]
+                	    student = Student.query.filter_by(id=student_id).first()
                     
-                    if form_type == "comment":
-                        student.comment = request.form["comment"]
-                    elif form_type == "remark":
-                        student.remark = request.form["remark"]
+                	    if form_type == "comment":
+                	        student.comment = request.form["comment"]
+                	    elif form_type == "remark":
+                 	       student.remark = request.form["remark"]
                         
-                    if not student_id or not request.form[form_type]:
-                        flash("You must fill all forms")
-                    else:
-                        store(student)
+                    	if not student_id or not request.form[form_type]:
+                    	    flash("You must fill all forms")
+                    	else:
+                    	    store(student)
             
-            except KeyError:
-                flash("Invalid form submission")
+            	except KeyError:
+            	    flash("Invalid form submission")
                 
-            return redirect(url_for('result', id=id))
+            	return redirect(url_for('result', id=id))
         
-        return render_template("result.html", students=students, room=room, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
+        	return render_template("result.html", students=students, room=room, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
 
-    #except:
-        #flash("All Student must have a score for every subject.")
-       # return redirect("/")
+	except:
+		flash("All Student must have a score for every subject.")
+		return redirect("/")
 
 
 
