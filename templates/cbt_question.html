@@ -25,6 +25,7 @@
 				<br/>
 			<div class="row">
 				<div class="col">
+				<input type="hidden" value="setQ" name="name">	
 				<select class="form-select form-select-sm" name='type'>
     				<option value="">Type</option>
    					<option value="Exam">Exam</option>
@@ -75,8 +76,28 @@
    			<b>Type :</b>  {{ cbt.type }}<br/>
 
     		{% if current_user.id == subject.room.admin.id %}
-			<a class="btn btn-sm btn-outline-danger" href="{{url_for('del_cbt', id=cbt.id, num=subject.id)}}">Delete</a>
-		{% endif %}
+			
+			<form method = 'POST'>
+			{{ form.hidden_tag() }}
+			<div class="row g-0">
+				<div class="col">
+				<input type="hidden" value="{{ cbt.id }}" name="num">
+				<input type="hidden" value="edit" name="name">	
+				<select class="form-select form-select-sm" name='type'>
+    				<option value="">Type</option>
+   					<option value="Exam">Exam</option>
+   					<option value="Test">Test</option>
+				</select>
+				</div>
+				<div class="col">
+				<button type="submit" class="btn btn-sm btn-secondary">Edit</button>
+				</div>
+				<div class="col">
+				<a class="btn btn-sm btn-outline-danger" href="{{url_for('del_cbt', id=cbt.id, num=subject.id)}}">Delete</a>
+				</div>
+			</div>
+			</form>
+			{% endif %}
 		</div>
 		{% endfor %}
 	</div>

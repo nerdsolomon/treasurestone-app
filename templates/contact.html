@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
 
 <p class="fs-5 fw-bold">Contact</p>
 
@@ -18,6 +25,7 @@
 <br><br>
 <p class="fs-6 fw-light">To contact the school administrators from their direct emails, click on any of the emails.</p>
 
+<div class="table-responsive">
 <table class="table table-hover table-sm table-bordered">
 	{% for admin in admins %}
     <tr>
@@ -45,12 +53,14 @@
 	</div>
 </form>
 	 </td>
+		{% if current_user.id != admin.id %}
       <td><a class="btn btn-sm text-danger" href="{{url_for('del_admin', id=admin.id)}}">Remove</a></td>
+		{% endif %}
 	{% endif %}
     </tr>
     {% endfor %}
 </table>
-
+</div>
 
 <div class="position-relative">
   <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="AddAdmin" style="width: 22em;">

@@ -422,84 +422,82 @@ def cbt_question(id):
     subject = Subject.query.filter_by(id=id).first()
     cbts = CBT.query.filter_by(subject_id=id)
     form = CBTForm()
-
-    if form.validate_on_submit():
-        try:
-            if form.file.data:
-                file = form.file.data
-                if file and allowed_file(file.filename):
-                    file_name = secure_filename(file.filename)
-                    file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
-                    crop_image(file.read()).save(file_path)
-                    cbt = CBT(question=form.question.data, answer=form.answer.data,
-                              option1=form.option1.data, option2=form.option2.data, option3=form.option3.data,
-                              file=file_name, subject_id=id, type=request.form['type'])
-                    store(cbt)
-                else:
-                    flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
-            else:
-                cbt = CBT(question=form.question.data, answer=form.answer.data,
-                          option1=form.option1.data, option2=form.option2.data, option3=form.option3.data,
-                          subject_id=id, type=request.form['type'])
-                store(cbt)
-
-            flash("Question added successfully.")
-        except Exception as e:
-            flash("An error occurred while adding the question: {}".format(str(e)))
-
-        return redirect(url_for('cbt_question', id=id))
-
+    
+    if request.method == "POST":
+    	form_type = request.form["name"]
+    	if form_type == "setQ":
+    		if form.file.data:
+    			file = form.file.data
+    			if file and allowed_file(file.filename):
+    				file_name = secure_filename(file.filename)
+    				file_path = os.path.join(app.config["FILE_FOLDER"], file_name)
+    				crop_image(file.read()).save(file_path)
+    				cbt = CBT(question=form.question.data, answer=form.answer.data, option1=form.option1.data, option2=form.option2.data, option3=form.option3.data, file=file_name, subject_id=id, type=request.form['type'])
+    				store(cbt)
+    			else:
+    				flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
+    		else:
+    			cbt = CBT(question=form.question.data, answer=form.answer.data, option1=form.option1.data, option2=form.option2.data, option3=form.option3.data, subject_id=id, type=request.form['type'])
+    			store(cbt)
+    		flash("Question added successfully.")
+    	
+    	elif form_type == "edit":
+    		question_id = CBT.query.get(request.form["num"])
+    		question_id.type = request.form["type"]
+    		store(question_id)
+    		flash("Question Type Edited Successfully.")
+    	
+    	return redirect(url_for('cbt_question', id=id))
     return render_template('cbt_question.html', subject=subject, cbts=cbts, form=form)
-
+    
 
 
 @app.route('/result/<int:id>', methods=['POST', 'GET'])
 @login_required
 def result(id):
-    #try:
-    account_type = session.get("account")
-    
-    if account_type == "Student":
-        psych = other2(id)
-        affect = other(id)
-        results = frame2(id)
-        return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)], tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
-    
-    else:
-        sheet = frame(id)
-        room = Class.query.filter_by(id=id).first()
-        students = Student.query.filter_by(class_id=id)
-        
-        if request.method == "POST":
-            try:
-                form_type = request.form["name"]
-                if form_type == "comment" or form_type == "remark":
-                    student_id = request.form["student"]
-                    student = Student.query.filter_by(id=student_id).first()
-                    
-                    if form_type == "comment":
-                        student.comment = request.form["comment"]
-                    elif form_type == "remark":
-                        student.remark = request.form["remark"]
-                        
-                    if not student_id or not request.form[form_type]:
-                        flash("You must fill all forms")
-                    else:
-                        store(student)
-            
-            except KeyError:
-                flash("Invalid form submission")
-                
-            return redirect(url_for('result', id=id))
-        
-        return render_template("result.html", students=students, room=room, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
-
-    #except:
-        #flash("All Student must have a score for every subject.")
-       # return redirect("/")
-
-
-
+	try:
+		account_type = session.get("account")
+		if account_type == "Student":
+			psych = other2(id)
+			affect = other(id)
+			results = frame2(id)
+			return render_template("result.html", psych=[psych.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)], tables=[results.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)],affect=[affect.to_html(classes="table table-hover table-bordered table-sm", justify="left", index=False)])
+		
+		else:
+			sheet = frame(id)
+			room = Class.query.filter_by(id=id).first()
+			students = Student.query.filter_by(class_id=id)
+			
+			if request.method == "POST":
+				try:
+					form_type = request.form["name"]
+					if form_type == "comment" or form_type == "remark":
+						student_id = request.form["student"]
+						student = Student.query.filter_by(id=student_id).first()
+						
+						if form_type == "comment":
+							student.comment = request.form["comment"]
+						elif form_type == "remark":
+							student.remark = request.form["remark"]
+						
+					if not student_id or not request.form[form_type]:
+						flash("You must fill all forms")
+					else:
+						store(student)
+				
+				except KeyError:
+					flash("Invalid form submission")
+				
+				return redirect(url_for('result', id=id))
+				
+			return render_template("result.html", students=students, room=room, tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")])
+			
+	except:
+		flash("All Student must have a score for every subject.")
+		return redirect("/")
+	
+	
+	
 @app.route('/save_sheet/<int:id>')
 @login_required
 def save_sheet(id):
