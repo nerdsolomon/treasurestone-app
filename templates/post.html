@@ -6,21 +6,13 @@
 	{% if current_user.type == "Admin" %}
 	<div class="sidebar">
 
-<div class="accordion accordion-flush" id="accordionFlushExample">
-   <div class="accordion-item">
-    <span class="accordion-header ">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Editpost" aria-expanded="false" style="background-color: #f1f1f1;" aria-controls="Editpost">Edit Post</button>
-    </span>
-    <div id="Editpost" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample" style="background-color: #f1f1f1;"><br>
+    <p class="text-center"><b>Edit Post</b></p>
 		<form method = 'POST'>
 		{{ form.hidden_tag() }}
 		{{ form.headline(class='form-control form-control-sm', rows="1", placeholder= "Headline") }}<br/>
-		{{ form.content(class="form-control form-control-sm", rows="6") }}<br/>
+		{{ form.content(class="form-control form-control-sm") }}<br/>
 		<center>{{ form.submit(class="form-control form-control-sm btn-secondary") }}</center>
 		</form>
-	</div>
-  </div>
-</div>
 
 	</div><br>
 	{% endif %}

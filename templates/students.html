@@ -12,33 +12,22 @@
 {% if current_user.type == "Admin" %}
 	<div class="sidebar">
 
-<div class="accordion accordion-flush" id="accordionFlushExample">
-   <div class="accordion-item">
-    <span class="accordion-header ">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#AddStu" aria-expanded="false" style="background-color: #f1f1f1;" aria-controls="AddStu">Add Student</button>
-    </span>
-    <div id="AddStu" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample" style="background-color: #f1f1f1;"><br>
-
+	<p class="text-center"><b>Add Student</b></p>
 	<form method = 'POST' enctype="multipart/form-data">
 		{{ form.hidden_tag() }}
 		{{ form.first_name(placeholder="First Name", class='form-control form-control-sm') }}<br/>
 		{{ form.last_name(placeholder="Last Name", class='form-control form-control-sm') }}<br/>
 		{{ form.email(placeholder="Email", class='form-control form-control-sm') }}<br/>
-	
 		<select class="form-select form-select-sm" name='gender'>
 		    <option >Gender</option>
 		    <option value="Male">Male</option>
 			<option value="Female">Female</option>
 		</select><br/>
-	
 		{{ form.password(placeholder="Password", class='form-control form-control-sm') }}<br/>
 		<center>
 		{{ form.submit(class='btn btn-sm btn-secondary') }}
 		</center>
 	</form>
-	</div>
-  </div>
-</div>
 
 	</div><br>
 {% endif %}

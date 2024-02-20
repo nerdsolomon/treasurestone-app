@@ -11,37 +11,36 @@
 
 {% if session["account"] == "Admin" %}
 	{% if current_user.type == "Admin" %}
-	<div class="sidebar">
+<div class="sidebar">
 
-<div class="accordion accordion-flush" id="accordionFlushExample">
-   <div class="accordion-item">
-    <span class="accordion-header ">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Addpost" aria-expanded="false" style="background-color: #f1f1f1;" aria-controls="Addpost">Add Content</button>
-    </span>
-    <div id="Addpost" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample" style="background-color: #f1f1f1;"><br>
-    <h5>Add Post To Newsletter</h5>
+    <p><b>Add Picture To Gallery</b></p>
+    <form method = 'POST' enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <input type="hidden" value="gallery" name="name">
+      <div class="row">
+      	<div class="col-8">
+      	{{ form.file(class='form-control form-control-sm') }}
+      	</div>
+      	{{ form.submit(class='btn col-4 btn-sm btn-secondary') }}
+      </div>
+    </form><hr>
+    
+    <p><b>Add Newsletter</b></p>
     <form method = 'POST' enctype="multipart/form-data">
 	   {{ form.hidden_tag() }}
       <input type="hidden" value="news" name="name">
 	   {{ form.headline(class='form-control form-control-sm', rows="1", placeholder= "Headline") }}<br>	
-	   {{ form.file(class='form-control form-control-sm') }}<br/>
-	   {{ form.content(class='form-control form-control-sm', placeholder= "write a post...", rows="6") }}<br/>
-	   <center>{{ form.submit(class='form-control btn-sm btn-secondary') }}</center>
-	  </form><br><br>
+	   {{ form.content(class='form-control form-control-sm', placeholder= "write a post...") }}<br/>
+	   
+	   <div class="row">
+      	<div class="col-8">
+      	{{ form.file(class='form-control form-control-sm') }}
+      	</div>
+      	{{ form.submit(class='btn col-4 btn-sm btn-secondary') }}
+      </div><br>
+	</form>
 
-    <h5>Add Picture To Gallery</h5>
-    
-    <form method = 'POST' enctype="multipart/form-data">
-      {{ form.hidden_tag() }}
-      <input type="hidden" value="gallery" name="name">
-      {{ form.file(class='form-control form-control-sm') }}<br/>
-      <center>{{ form.submit(class='form-control btn-sm btn-secondary') }}</center>
-    </form><br>
-	</div>
-  </div>
-</div>
-
-	</div><br>
+</div><br>
 	{% endif %}
 {% endif %}
 
@@ -73,7 +72,6 @@
   </div>
 </div>
 
-  
 <br>
 
 <nav class="nav-secondary bg-secondary">
@@ -83,24 +81,31 @@
 </nav>
 <br>
 
-<div class="row">
+
 {% for post in posts.items %}
-<div class="col-6">
+
 <div class="card">
 	<a href="{{url_for('post', id=post.id)}}" class="stretched-link"></a>
+	
+<div class="row g-0">
+<div class="col-9">
 	<div class="card-body">
 	{% if post.headline %}
 		<b>{{ post.headline }}</b><br>
 	{% endif %}
 		<small class="text-secondary">{{ post.time }}</small>
 	</div>
+</div>
+
+<div class="col-3">
 	{% if post.file %}
-		<img src="{{url_for('static', filename=post.file )}}" class="card-img-bottom">
+		<img src="{{url_for('static', filename=post.file )}}" class="card-img-bottom" height="90">
 	{% endif %}
+</div>
+</div>
+
 </div><br>
-</div>
 {% endfor %}
-</div>
 
 <center>
 <!-- Pagination Links-->
