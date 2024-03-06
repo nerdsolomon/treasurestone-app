@@ -309,7 +309,7 @@ def base():
 
 
 @app.route('/setting', methods=['POST', 'GET'])
-@login_required
+#@login_required
 def setting():
     form = EditForm()
     active = Active.query.first()
