@@ -1,24 +1,23 @@
 /* The side navigation menu */
 .sidebar {
-  margin-left: 600px;
+  margin-left: 700px;
   padding: 0rem 1.5rem;
   overflow-y: auto;
   width: 400px;
   position: fixed;
   border-radius: 0.25rem;
   font-size: 0.85rem;
-  height: 1000px;
-  background-color: #f1f1f1;
+  height: auto;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 div.content {
   margin: 0;
-  width: 600px;
+  width: 700px;
   padding: 1px 10px;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1100px) {
   .sidebar {
     width: 100%;
     height: auto;
