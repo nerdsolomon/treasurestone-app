@@ -1,9 +1,9 @@
 /* The side navigation menu */
 .sidebar {
-  margin-left: 800px;
+  margin-left: 600px;
   padding: 0rem 1.5rem;
   overflow-y: auto;
-  width: 500px;
+  width: 400px;
   position: fixed;
   border-radius: 0.25rem;
   font-size: 0.85rem;
@@ -12,11 +12,11 @@
 
 div.content {
   margin: 0;
-  width: 800px;
+  width: 600px;
   padding: 1px 10px;
 }
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1000px) {
   .sidebar {
     width: 100%;
     height: auto;
