@@ -18,8 +18,7 @@ import io
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hello..."
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///school.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gpvnkhalhmpuyv:4fa934c7d793a3a8b49ccda5ef0ca4d53ed18fc0a7da3fd7ed771ed8af450c49@ec2-44-213-151-75.compute-1.amazonaws.com:5432/d21tkl44q3n039'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', None)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
