@@ -23,9 +23,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 FILE_FOLDER = "static"
-#if not os.path.exists(FILE_FOLDER):
-#	os.makedirs(FILE_FOLDER)
-	
 app.config["FILE_FOLDER"] = FILE_FOLDER
 
 login_manager = LoginManager()
@@ -596,7 +593,7 @@ def admin_login():
 def login(id):
     form = LoginForm()
     if form.validate_on_submit():
-        user = Student.query.filter_by(session_id=id, email=form.email.data).first()
+        user = Student.query.filter_by(session_id=id, email=form.email.data.lower()).first()
 
         if user:
             if check_password_hash(user.password, form.password.data):
@@ -688,9 +685,9 @@ def students(id):
 
     if form.validate_on_submit():
         user = Student(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            email=form.email.data,
+            first_name=form.first_name.data.capitalize(),
+            last_name=form.last_name.data.capitalize(),
+            email=(f"{form.first_name.data}{form.last_name.data}@treasurestone.com").lower(),
             sex=request.form['gender'],
             password=generate_password_hash(form.password.data),
             class_id=room.id,
@@ -701,7 +698,6 @@ def students(id):
             flash(f"{form.first_name.data} {form.last_name.data} successfully enrolled.")
             form.first_name.data = ''
             form.last_name.data = ''
-            form.email.data = ''
         except Exception as e:
             flash(f"Student not added. Error: {str(e)}. Check forms and try again.")
 
@@ -754,7 +750,7 @@ def class_(id):
             except Exception as e:
                 flash(f"Failed to upload material. Error: {str(e)}")
         elif action_type == "subject":
-            new_subject = Subject(title=form.title.data, class_id=id)
+            new_subject = Subject(title=form.title.data.capitalize(), class_id=id)
             store(new_subject)
             flash(f"Subject '{form.title.data}' added successfully.")
             form.title.data = ""
@@ -777,7 +773,7 @@ def classes(id):
 
         try:
             if action_type == "class":
-                new_class = Class(title=form.title.data, session_id=sessions.id)
+                new_class = Class(title=form.title.data.capitalize(), session_id=sessions.id)
                 store(new_class)
                 flash("Class added successfully.")
                 

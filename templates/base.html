@@ -35,7 +35,7 @@
 <div class="accordion accordion-flush" id="accordionFlushExample">
    <div class="accordion-item">
     <span class="accordion-header ">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">📚 Subjects</button>
+      <button class="accordion-button collapsed" style="padding: 1rem 1rem;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">📚 Subjects</button>
     </span>
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body"> 
@@ -58,7 +58,7 @@
 <div class="accordion accordion-flush" id="accordionFlushExample">
    <div class="accordion-item">
     <span class="accordion-header ">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">🗂 Registers</button>
+      <button class="accordion-button collapsed" style="padding: 1rem 1rem;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">🗂 Registers</button>
     </span>
     <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body"> 
@@ -74,8 +74,8 @@
 <hr>
 <div class="accordion accordion-flush" id="accordionFlushExample">
    <div class="accordion-item">
-    <span class="accordion-header ">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">📑 Broadsheets</button>
+    <span class="accordion-header">
+      <button class="accordion-button collapsed" style="padding: 1rem 1rem;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">📑 Broadsheets</button>
     </span>
     <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
       <div class="accordion-body"> 
@@ -101,7 +101,7 @@
 <a class="nav-link link-dark "  href="/logout">📤 Logout</a>
 {% else %}
 <hr>
-<a class="nav-link link-dark " href="/admin-login">💼 Admin Login</a>
+<a class="nav-link link-dark " href="/admin-login">💼 Admin & Tutor Login</a>
 {% if active %}
 <hr>
 <a class="nav-link link-dark " href="{{ url_for('login', id=active.session.id )}}">🎓 Student Login</a>
