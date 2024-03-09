@@ -9,7 +9,7 @@
 {% endfor %}
 
 
-{% if current_user.type == "Admin" %}
+{% if current_user.id == room.admin.id %}
 	<div class="sidebar">
 
 	<p class="text-center"><b>Add Student</b></p>
