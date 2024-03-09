@@ -2,7 +2,7 @@
 {% block content %}
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
        <small>{{ message }}</small>
        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
@@ -33,7 +33,7 @@
 
 
 
-{% if current_user.type == "Admin" %}
+{% if current_user.id == room.admin.id %}
 <div class="content">
 {% endif %}
 
@@ -56,7 +56,7 @@
       <td>{{ student.last_name }}</td>
 	  <td>{{ student.sex }}</td>
       <td>{{ student.email }}</td>
-	{% if current_user.type == "Admin" %}
+	{% if current_user.id == room.admin.id %}
       <td><a class="btn text-danger"href="{{ url_for('del_student', id=student.id, num=room.id) }}" >Remove</a></td>
     {% endif %}
     </tr>
@@ -65,7 +65,7 @@
 </table>
 </div>
 
-{% if current_user.type == "Admin" %}
+{% if current_user.id == room.admin.id %}
 </div>
 {% endif %}
 
