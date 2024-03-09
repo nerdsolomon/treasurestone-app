@@ -44,9 +44,6 @@
 	<a class="btn btn-outline-dark btn-sm"href="{{url_for('psych_affect', id=classed.id)}}">Psychomotor & Affective Ratings</a>
 </center>
 
-{% endif %}
-
-{% if current_user.type == "Admin" %}
 <center>
 <div class="col-5">
 <form method = 'POST'>
@@ -105,7 +102,7 @@
 </form>
 	</td>
 	
-	{% elif current_user.type == "Admin" %}
+	{% elif current_user.id == classed.admin.id %}
 	<td><a class="text-danger" href="{{url_for('del_subject', id=subject.id, num=classed.id)}}">Delete</a></td>
 	{% endif %}
 	
