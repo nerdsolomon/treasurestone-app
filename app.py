@@ -436,7 +436,8 @@ def cbt_question(id):
     		else:
     			cbt = CBT(question=form.question.data, answer=form.answer.data, option1=form.option1.data, option2=form.option2.data, option3=form.option3.data, subject_id=id, type=request.form['type'])
     			store(cbt)
-    		flash("Question added successfully.")
+            flash("Question added successfully.")
+            
         elif form_type == "subject_name":
             subject.title = form.answer.data
             store(subject)
