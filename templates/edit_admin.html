@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       <small>{{ message }}</small>
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+<center>
+<div class="card shadow">
+	<div class="card-header"><p class="text-center"><b>Edit</b></p></div>
+	<div class="card-body">
+		<form method = 'POST' enctype="multipart/form-data">
+			{{ form.hidden_tag() }}
+			<input type="hidden" name="name" value="add">
+			{{ form.username(placeholder="Full Name", class='form-control') }}
+			<br/>
+			{{ form.email(placeholder="Email", class='form-control') }}
+			<br>
+			<select class="form-select" name='type'>
+    			<option value={{selected_type}} selected>{{selected_type}}</option>
+   				<option value="Admin">Admin</option>
+   				<option value="Tutor">Tutor</option>
+			</select>
+			<br/>
+			{{ form.submit(class='btn btn-secondary') }}
+		</form>
+	</div>
+</div>
+</center>
+
+{% endblock %}

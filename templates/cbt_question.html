@@ -51,6 +51,9 @@
 	<div class="col text-center">
 	<p class="text-center fw-bold fs-5">{{ subject.title }} Questions</p>
 	</div>
+	<div class="col-1 text-end">
+	<button class="btn btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#Subject-name">Edit</button>
+	</div>
 </div>
 	<div class="list-group-flush">
 		{% for cbt in cbts %}
@@ -67,27 +70,8 @@
    			<b>Type :</b>  {{ cbt.type }}<br/>
 
     		{% if current_user.id == subject.room.admin.id %}
-			
-			<form method = 'POST'>
-			{{ form.hidden_tag() }}
-			<div class="row g-0">
-				<div class="col">
-				<input type="hidden" value="{{ cbt.id }}" name="num">
-				<input type="hidden" value="edit" name="name">	
-				<select class="form-select form-select-sm" name='type'>
-    				<option value="">Type</option>
-   					<option value="Exam">Exam</option>
-   					<option value="Test">Test</option>
-				</select>
-				</div>
-				<div class="col">
-				<button type="submit" class="btn btn-sm btn-secondary">Edit</button>
-				</div>
-				<div class="col">
-				<a class="btn btn-sm btn-outline-danger" href="{{url_for('del_cbt', id=cbt.id, num=subject.id)}}">Delete</a>
-				</div>
-			</div>
-			</form>
+			<a class="btn btn-sm btn-outline-dark" href="{{url_for('edit_question', id=cbt.id)}}">Edit</a>
+			<a class="btn btn-sm btn-outline-danger" href="{{url_for('del_cbt', id=cbt.id, num=subject.id)}}">Delete</a>
 			{% endif %}
 		</div>
 		{% endfor %}
@@ -96,5 +80,20 @@
 {% if current_user.id == subject.room.admin.id %}
 </div>
 {% endif %}
+
+
+<div class="position-relative">
+ <div class="offcanvas offcanvas-top-50 start-50 translate-middle" id="Subject-name" style="width: 21em;">
+	<div class="offcanvas-body">
+	<p class="text-center fw-bold">Edit Subject Name</p>
+<form method = 'POST'>
+		<input type="hidden" value="subject_name" name="name">
+	{{ form.answer(class="form-control", placeholder="Subject Name") }}<br/>
+	<center>{{ form.submit(class="btn btn-secondary") }}</center>
+</form>
+	</div>
+ </div>
+</div>
+
 
 {% endblock %}

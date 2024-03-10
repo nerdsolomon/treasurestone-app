@@ -1,14 +1,13 @@
 /* The side navigation menu */
 .sidebar {
   margin-left: 700px;
-  padding: 0rem 1rem;
+  padding: 0rem 0.5rem;
   overflow-y: auto;
   width: 400px;
   position: fixed;
   border-radius: 0.25rem;
   font-size: 0.85rem;
   height: auto;
-  border-left: 0.5px dotted;
 }
 
 div.content {

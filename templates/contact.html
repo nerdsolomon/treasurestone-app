@@ -34,27 +34,9 @@
       <td><a class="fw-light" href="mailto:{{ admin.email }}">{{ admin.email }}</a></td>
 
 	{% if current_user.type == "Admin" %}
-	  <td>
-<form method = 'POST'>
-	{{ form.hidden_tag() }}
-	<input type="hidden" name="name" value="edit">
-	<input type="hidden" name="id" value="{{ admin.id }}">
-	<div class="row g-1">
-	<div class="col">
-	<select class="form-select form-select-sm" name='type'>
-    	<option value=""selected>Type</option>
-   		<option value="Admin">Admin</option>
-   		<option value="Tutor">Tutor</option>
-	</select>
-	</div>
-	<div class="col">
-	<button class="btn btn-sm btn-secondary" type="submit">Edit</button>
-	</div>
-	</div>
-</form>
-	 </td>
+	  <td><a class="btn btn-sm" href="{{url_for('edit_admin', id=admin.id)}}">Edit</a></td>
 		{% if current_user.id != admin.id %}
-      <td><a class="btn btn-sm text-danger" href="{{url_for('del_admin', id=admin.id)}}">Remove</a></td>
+      <td><a class="btn btn-sm text-danger" href="{{url_for('del_admin', id=admin.id)}}">Delete</a></td>
 		{% endif %}
 	{% endif %}
     </tr>

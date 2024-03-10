@@ -17,7 +17,7 @@ import io
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "hello..."
+app.config["SECRET_KEY"] = "treasurestone"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', None)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -305,7 +305,7 @@ def base():
 
 
 @app.route('/setting', methods=['POST', 'GET'])
-#@login_required
+@login_required
 def setting():
     form = EditForm()
     active = Active.query.first()
@@ -418,6 +418,7 @@ def cbt_question(id):
     subject = Subject.query.filter_by(id=id).first()
     cbts = CBT.query.filter_by(subject_id=id)
     form = CBTForm()
+    form.answer.data = subject.title
     
     if request.method == "POST":
     	form_type = request.form["name"]
@@ -437,15 +438,28 @@ def cbt_question(id):
     			store(cbt)
     		flash("Question added successfully.")
     	
-    	elif form_type == "edit":
-    		question_id = CBT.query.get(request.form["num"])
-    		question_id.type = request.form["type"]
-    		store(question_id)
-    		flash("Question Type Edited Successfully.")
+        elif form_type == "subject_name":
+            subject.title = form.answer.data
+            store(subject)
+            flash("Subject Edited Successfully.")
     	
     	return redirect(url_for('cbt_question', id=id))
     return render_template('cbt_question.html', subject=subject, cbts=cbts, form=form)
     
+
+
+@app.route('/edit-question/<int:id>', methods=["POST", "GET"])
+@login_required
+def edit_question(id):
+    cbt = CBT.query.filter_by(id=id).first()
+    form = CBTForm()
+    form.question.data, form.answer.data, form.option1.data, form.option2.data, form.option3.data, selected_type = cbt.question, cbt.answer, cbt.option1, cbt.option2, cbt.option3, cbt.type
+    if request.method == "POST":
+        cbt.question, cbt.answer, cbt.option1, cbt.option2, cbt.option3, cbt.type = form.question.data, form.answer.data, form.option1.data, form.option2.data, form.option3.data, request.form['type']
+        store(cbt)
+        flash("Question Edited Successfully")
+        return redirect(url_for('cbt_question', id=cbt.subject.id))
+    return render_template("edit_question.html", form=form, cbt=cbt)
 
 
 @app.route('/result/<int:id>', methods=['POST', 'GET'])
@@ -705,6 +719,29 @@ def students(id):
 
 
 
+@app.route('/edit-student/<int:id>', methods=['POST', 'GET'])
+@login_required
+def edit_student(id):
+    form = StudentForm()
+    student = Student.query.filter_by(id=id).first()
+    form.first_name.data = student.first_name
+    form.last_name.data = student.last_name
+
+    if request.method == "POST":
+        student.first_name=form.first_name.data.capitalize()
+        student.last_name=form.last_name.data.capitalize()
+        student.email=(f"{form.first_name.data}{form.last_name.data}@treasurestone.com").lower()
+        try:
+            store(student)
+            flash(f"{form.first_name.data} {form.last_name.data} Editted successfully.")
+            return redirect(url_for("students", id=student.room.id))
+        except Exception as e:
+            flash(f"Student not added. Check forms and try again.")
+
+    return render_template('edit_student.html', form=form)
+
+
+
 
 @app.route('/subject/<int:id>')
 @login_required
@@ -784,7 +821,7 @@ def classes(id):
                 flash("Admin assigned successfully.")
         
         except Exception as e:
-            flash(f"An error occurred: {str(e)}")
+            flash(f"An error occurred. Check forms and try again.")
 
     return render_template('classes.html', classes=classes, form=form, sess=id, admins=admins)
 
@@ -904,33 +941,43 @@ def psych_affect(id):
 
 
 
+
+@app.route('/edit-admin/<int:id>', methods=['POST', 'GET'])
+def edit_admin(id):
+    form = AdminForm()
+    admin = Admin.query.filter_by(id=id).first()
+    form.username.data=admin.username,
+    form.email.data=admin.email,
+    selected_type=admin.type,
+
+    if request.method == "POST":
+        admin.username = form.username.data
+        admin.email = form.email.data
+        admin.type = request.form["type"]
+        store(admin)
+        flash("Admin Editted Successfully...")
+        return redirect('/contact')
+    return render_template("edit_admin.html",form=form, selected_type=selected_type, admin=admin)
+
+
+
 @app.route('/contact', methods=['POST', 'GET'])
 def contact():
     form = AdminForm()
     admins = Admin.query.order_by(Admin.id)
 
     if request.method == "POST":
-        action_type = request.form["name"]
-
-        if action_type == "add":
-            new_admin = Admin(
-                username=form.username.data,
-                email=form.email.data,
-                type=request.form["type"],
-                password=generate_password_hash(form.password.data)
-            )
-            try:
-                store(new_admin)
-                flash("User added successfully!")
-            except:
-                flash('User not added. Check forms and try again.')
-
-        elif action_type == "edit":
-            admin_id = request.form["id"]
-            edited_admin = Admin.query.get(admin_id)
-            edited_admin.type = request.form["type"]
-            store(edited_admin)
-            flash("User updated successfully!")
+        new_admin = Admin(
+            username=form.username.data,
+            email=form.email.data,
+            type=request.form["type"],
+            password=generate_password_hash(form.password.data)
+        )
+        try:
+            store(new_admin)
+            flash("User added successfully!")
+        except:
+            flash('User not added. Check forms and try again.')
 
     return render_template("contact.html", form=form, admins=admins)
 

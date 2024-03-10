@@ -19,7 +19,7 @@
       <input type="hidden" value="gallery" name="name">
       <div class="row">
       	<div class="col-8">
-      	{{ form.file(class='form-control form-control-sm') }}
+      	{{ form.file(class='form-control') }}
       	</div>
       	{{ form.submit(class='btn col-4 btn-sm btn-secondary') }}
       </div>
@@ -29,12 +29,12 @@
     <form method = 'POST' enctype="multipart/form-data">
 	   {{ form.hidden_tag() }}
       <input type="hidden" value="news" name="name">
-	   {{ form.headline(class='form-control form-control-sm', rows="1", placeholder= "Headline") }}<br>	
-	   {{ form.content(class='form-control form-control-sm', placeholder= "write a post...") }}<br/>
+	   {{ form.headline(class='form-control', rows="1", placeholder= "Headline") }}<br>	
+	   {{ form.content(class='form-control', placeholder= "write a post...") }}<br/>
 	   
 	   <div class="row">
       	<div class="col-8">
-      	{{ form.file(class='form-control form-control-sm') }}
+      	{{ form.file(class='form-control') }}
       	</div>
       	{{ form.submit(class='btn col-4 btn-sm btn-secondary') }}
       </div><br>
