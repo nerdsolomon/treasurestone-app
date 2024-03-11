@@ -57,6 +57,7 @@
 	  <td>{{ student.sex }}</td>
       <td>{{ student.email }}</td>
 	{% if current_user.id == room.admin.id %}
+	  <td><a class="btn" href="{{ url_for('edit_student', id=student.id, num=room.id) }}" >Edit</a></td>
       <td><a class="btn text-danger"href="{{ url_for('del_student', id=student.id, num=room.id) }}" >Remove</a></td>
     {% endif %}
     </tr>
