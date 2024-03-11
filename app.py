@@ -945,9 +945,9 @@ def psych_affect(id):
 def edit_admin(id):
     form = AdminForm()
     admin = Admin.query.filter_by(id=id).first()
-    form.username.data=admin.username,
-    form.email.data=admin.email,
-    selected_type=admin.type,
+    form.username.data=admin.username
+    form.email.data=admin.email
+    selected_type=admin.type
 
     if request.method == "POST":
         admin.username = form.username.data
