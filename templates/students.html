@@ -11,8 +11,10 @@
 
 {% if current_user.id == room.admin.id %}
 	<div class="sidebar">
-
-	<p class="text-center"><b>Add Student</b></p>
+	<div class="card shadow">
+	<div class="card-header"><p class="text-center"><b>Add Student</b></p></div>
+	<div class="card-body">
+	
 	<form method = 'POST' enctype="multipart/form-data">
 		{{ form.hidden_tag() }}
 		{{ form.first_name(placeholder="First Name", class='form-control') }}<br/>
@@ -27,6 +29,9 @@
 		{{ form.submit(class='btn btn-sm btn-secondary') }}
 		</center>
 	</form>
+
+	</div>
+	</div>
 
 	</div><br>
 {% endif %}
