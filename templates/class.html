@@ -102,7 +102,6 @@
 </form>
 	</td>
 	
-	{% elif current_user.id == classed.admin.id %}
 	<td><a class="text-danger" href="{{url_for('del_subject', id=subject.id, num=classed.id)}}">Delete</a></td>
 	{% endif %}
 	
