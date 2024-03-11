@@ -816,7 +816,7 @@ def classes(id):
                 selected_class = Class.query.get(request.form["class"])
                 selected_class.admin_id = request.form['admin']
                 store(selected_class)
-                flash("Admin assigned successfully.")
+                flash("Tutor assigned successfully.")
         
         except Exception as e:
             flash(f"An error occurred. Check forms and try again.")
