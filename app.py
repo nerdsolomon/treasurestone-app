@@ -418,7 +418,6 @@ def cbt_question(id):
     subject = Subject.query.filter_by(id=id).first()
     cbts = CBT.query.filter_by(subject_id=id)
     form = CBTForm()
-    form.answer.data = subject.title
     
     if request.method == "POST":
     	form_type = request.form["name"]
@@ -443,6 +442,7 @@ def cbt_question(id):
             flash("Subject Edited Successfully.")
     	
     	return redirect(url_for('cbt_question', id=id))
+    form.answer.data = subject.title
     return render_template('cbt_question.html', subject=subject, cbts=cbts, form=form)
     
 
@@ -452,12 +452,12 @@ def cbt_question(id):
 def edit_question(id):
     cbt = CBT.query.filter_by(id=id).first()
     form = CBTForm()
-    form.question.data, form.answer.data, form.option1.data, form.option2.data, form.option3.data, selected_type = cbt.question, cbt.answer, cbt.option1, cbt.option2, cbt.option3, cbt.type
     if request.method == "POST":
         cbt.question, cbt.answer, cbt.option1, cbt.option2, cbt.option3, cbt.type = form.question.data, form.answer.data, form.option1.data, form.option2.data, form.option3.data, request.form['type']
         store(cbt)
         flash("Question Edited Successfully")
         return redirect(url_for('cbt_question', id=cbt.subject.id))
+    form.question.data, form.answer.data, form.option1.data, form.option2.data, form.option3.data, selected_type = cbt.question, cbt.answer, cbt.option1, cbt.option2, cbt.option3, cbt.type
     return render_template("edit_question.html", form=form, cbt=cbt)
 
 
@@ -723,12 +723,10 @@ def students(id):
 def edit_student(id):
     form = StudentForm()
     student = Student.query.filter_by(id=id).first()
-    form.first_name.data = student.first_name
-    form.last_name.data = student.last_name
 
     if request.method == "POST":
-        student.first_name=form.first_name.data.capitalize()
-        student.last_name=form.last_name.data.capitalize()
+        student.first_name=form.first_name.data
+        student.last_name=form.last_name.data
         student.email=(f"{form.first_name.data}{form.last_name.data}@treasurestone.com").lower()
         try:
             store(student)
@@ -736,7 +734,8 @@ def edit_student(id):
             return redirect(url_for("students", id=student.room.id))
         except Exception as e:
             flash(f"Student not added. Check forms and try again.")
-
+    form.first_name.data = student.first_name
+    form.last_name.data = student.last_name
     return render_template('edit_student.html', form=form)
 
 
@@ -945,10 +944,7 @@ def psych_affect(id):
 def edit_admin(id):
     form = AdminForm()
     admin = Admin.query.filter_by(id=id).first()
-    form.username.data=admin.username
-    form.email.data=admin.email
-    selected_type=admin.type
-
+    
     if request.method == "POST":
         admin.username = form.username.data
         admin.email = form.email.data
@@ -956,6 +952,9 @@ def edit_admin(id):
         store(admin)
         flash("Admin Editted Successfully...")
         return redirect('/contact')
+    form.username.data=admin.username
+    form.email.data=admin.email
+    selected_type=admin.type
     return render_template("edit_admin.html",form=form, selected_type=selected_type, admin=admin)
 
 
