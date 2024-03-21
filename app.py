@@ -44,7 +44,7 @@ date = datetime.now()
 
 class Admin(db.Model, UserMixin):
 	id =  db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String, nullable=False, unique=True)
+	username = db.Column(db.String, nullable=False)
 	email = db.Column(db.String, nullable=False, unique=True)
 	type = db.Column(db.String)
 	password = db.Column(db.String, nullable=False)
@@ -82,7 +82,7 @@ class Active(db.Model):
 	
 class Class(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
-	title = db.Column(db.String, unique=True) 
+	title = db.Column(db.String) 
 	announce = db.Column(db.String)
 	session_id = db.Column(db.Integer, db.ForeignKey("session.id", ondelete="CASCADE"))
 	subjects = db.relationship('Subject', backref='room', cascade="all, delete-orphan")
@@ -94,7 +94,7 @@ class Class(db.Model):
 
 class Subject(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
-	title = db.Column(db.String, unique=True) 
+	title = db.Column(db.String) 
 	file = db.Column(db.String)
 	class_id = db.Column(db.Integer, db.ForeignKey('class.id', ondelete="CASCADE"))
 	cbt = db.relationship('CBT', backref='subject', cascade="all, delete-orphan")
@@ -122,7 +122,7 @@ class Student(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key = True)
 	first_name = db.Column(db.String, nullable=False)
 	last_name = db.Column(db.String, nullable=False)
-	email = db.Column(db.String, nullable=False, unique=True)
+	email = db.Column(db.String, nullable=False)
 	sex = db.Column(db.String, nullable=False)
 	comment = db.Column(db.String)
 	remark = db.Column(db.String)
