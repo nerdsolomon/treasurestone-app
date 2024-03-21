@@ -18,8 +18,7 @@ import io
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "treasurestone"
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', None)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tdugxvxikfftmt:62367ac4bc2d293f0f32f38177d48459173acf252a06d1c4c82e834ff1e5ff5a@ec2-44-211-104-233.compute-1.amazonaws.com:5432/d3askql7emosl5'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', None)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -839,8 +838,6 @@ def view_scores(id):
 
             if score or student_id is None:
                 flash("Please enter a valid name or score.")
-            elif score and student_id is None:
-                flash("Please enter a valid name and score.")
             else:
                 score = int(score)
 
