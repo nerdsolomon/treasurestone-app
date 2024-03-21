@@ -836,8 +836,8 @@ def view_scores(id):
             student_id = request.form["student"]
             score = form.number.data
 
-            if score is None:
-                flash("Please enter a valid score.")
+            if score or student_id is None:
+                flash("Please enter a valid name or score.")
             else:
                 score = int(score)
 
