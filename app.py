@@ -336,13 +336,8 @@ def setting():
 
 @app.route('/download/<path:filename>')
 def download(filename):
-    # Validate and sanitize the filename
-    filename = secure_filename(filename)
-    try:
-        return send_from_directory(app.config['FILE_FOLDER'], filename, as_attachment=True)
-    except FileNotFoundError:
-        abort(404)  # Adjust the response code according to your project's needs
-
+    filename = filename
+    return send_from_directory(app.config['FILE_FOLDER'], filename, as_attachment=True)
 
 
 
@@ -852,7 +847,10 @@ def view_scores(id):
                     existing_result = Test.query.filter_by(subject_id=subject.id, student_id=student_id).first()
 
                 if existing_result:
-                    flash(f"This student already has a {action_type.capitalize()} score for this subject.")
+                    existing_result.score = score
+                    store(existing_result)
+                    form.number.data = ""
+                    flash(f"{action_type.capitalize()} score editted successfully.")
                 else:
                     if action_type == "exam":
                         new_result = Exam(class_id=subject.room.id, score=score, student_id=student_id, subject_id=subject.id)
