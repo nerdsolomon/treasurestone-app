@@ -838,6 +838,8 @@ def view_scores(id):
 
             if score or student_id is None:
                 flash("Please enter a valid name or score.")
+            elif score and student_id is None:
+                flash("Please enter a valid name and score.")
             else:
                 score = int(score)
 
