@@ -17,7 +17,7 @@ import io
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "treasurestone"
+app.config["SECRET_KEY"] = os.environ.get('KEY', None)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', None)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
