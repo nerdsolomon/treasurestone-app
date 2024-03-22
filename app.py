@@ -45,7 +45,7 @@ date = datetime.now()
 class Admin(db.Model, UserMixin):
 	id =  db.Column(db.Integer, primary_key = True)
 	username = db.Column(db.String, nullable=False)
-	email = db.Column(db.String, nullable=False, unique=True)
+	email = db.Column(db.String, nullable=False)
 	type = db.Column(db.String)
 	password = db.Column(db.String, nullable=False)
 	class_ = db.relationship('Class', backref='admin')
