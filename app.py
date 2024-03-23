@@ -839,7 +839,7 @@ def view_scores(id):
             if score or student_id is None:
                 flash("Please enter a valid name or score.")
             else:
-                score = int(score)
+                score = float(score)
 
                 if action_type == "exam":
                     existing_result = Exam.query.filter_by(subject_id=subject.id, student_id=student_id).first()
