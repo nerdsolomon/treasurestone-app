@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+<br>
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       {{ message }}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+
+<p class="fw-bold fs-5">Academic Sessions</p>
+
+<form method = 'POST'>
+	<div class="input-group" style="width: 20rem;">
+	{{ form.hidden_tag() }}
+	<span class="input-group-text">New</span>
+	<input type="hidden" value="session" name="name">
+	{{form.string(class='form-control', placeholder="2023/24") }}
+	<select class="form-select" name='term'>
+    	<option selected>Term</option>
+		<option value="First Term">First Term</option>
+		<option value="Second Term">Second Term</option>
+		<option value="Third Term">Third Term</option>
+	</select>
+	{{ form.submit(class='btn btn-secondary') }}
+	</div>
+</form>
+
+<table class="table table-hover table-sm table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Session</th>
+      <th scope="col">Term</th>
+	  <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+	{% for session in sessions %}
+    <tr>
+      <td>{{ session.session }}</td>
+      <td>{{ session.term }}</td>
+	  <td>{{ session.date }}</td>
+	  {% if active %}
+	  {% if active.session.id == session.id %}
+	      <td class="text-success">ACTIVE</td>
+	  {% else %}
+	  <form method="POST">
+	      <input type="hidden" value="active" name="name">
+	      <input type="hidden" value="{{ session.id }}" name="session">
+	      <td><button class="btn btn-sm btn-secondary" type="submit">Activate</button></td>
+	  </form>
+	  {% endif %}
+	  {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br><br>
+
+<p class="fw-bold fs-5">Homepage Slide Images</p>
+
+<form method = 'POST' enctype="multipart/form-data">
+	{{ form.hidden_tag() }}
+	<input type="hidden" value="slide" name="name">
+	<div class="input-group mb-3" style="width: 20rem;">
+	{{ form.file(class="form-control") }}
+	{{ form.submit(class="btn btn-secondary") }}
+	</div>
+</form>
+
+    {% for slide in slides %}
+	<div class="dropdown">
+		<img src="{{ url_for('static', filename='storage/'+slide.image)}}" class="mb-1" width="100" height="100">
+		<div class="dropdown-content">
+			<a href="{{url_for('slide_delete', id=slide.id)}}">Remove</a>
+		</div>
+	</div>
+    {% endfor %}
+    
+
+<br><br>
+</div>
+{% endblock %}

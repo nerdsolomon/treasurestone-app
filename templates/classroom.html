@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+<br>
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       {{ message }}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+<p class="text-center fw-bold">{{ room.title }}</p>
+
+<center>
+<form method = 'POST'>
+	<div class="input-group mb-3" style="width:24rem;">
+	{{ form.hidden_tag() }}
+	<input type="hidden" value="subject" name="name">	
+	{{ form.string(class="form-control form-control-lg",placeholder="Add Subject") }}
+	{{ form.submit(class='btn btn-lg btn-secondary') }}
+	</div>
+</form>
+</center>
+
+<table class="table table-hover table-sm table-bordered">
+  <thead>
+    <tr>
+    <th scope="col">Subject</th>
+	<th scope="col">File</th>
+	<th scope="col">Upload</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+	{% for subject in subjects %}
+    <tr>
+      <td>
+        <form method="POST">
+           <input type="hidden" value="{{ subject.id }}" name="subject">
+       	<input type="hidden" value="sub" name="name">
+           {{ form.hidden_tag() }}
+       	   {{ form.string(value=subject.title, style="border: 0; background-color: transparent; border-radius:0;", class="form-control") }}
+        </form>
+     </td>
+	  <td>
+	  {% if subject.file %}
+		<a class="nav-link" href="{{url_for('download', filename=subject.file)}}">Download<a>
+	  {% else %}
+	    <a class="nav-link text-danger">No file</a>
+	  {% endif %}
+	 </td>
+	 <td>
+	 <form method = 'POST' enctype="multipart/form-data">
+        <div class="input-group">
+    	{{ form.hidden_tag() }}
+         <input type="hidden" value="{{ subject.id }}" name="subject">
+     	<input type="hidden" value="material" name="name">
+ 		{{ form.file(class="form-control form-control-sm") }}
+     	{{ form.submit(class="btn btn-secondary btn-sm") }}
+     	</div>
+     </form>
+	 </td>
+	 <td>
+        <div class="dropdown">
+	    	<a class="btn dropdown-toggle"></a>
+	    	<div class="dropdown-content" style="right: 0;">
+                <a href="{{url_for('subject_questions', id=subject.id)}}">Questions</a>
+                <a href="{{url_for('view_scores', id=subject.id)}}">View Scores</a>
+		        <a class="text-danger" href="{{url_for('subject_delete', id=subject.id, num=room.id)}}">Delete</a>
+    		</div>
+    	</div>
+    </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</div>
+{% endblock %}

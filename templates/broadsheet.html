@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+<br>
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       {{ message }}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+
+<p class="text-center fw-bold">{{ room.title }} BROADSHEET</p>
+
+<p class="text-center"><b>Class Teacher : </b>{{ room.staff.name }}</p>
+
+<div class="table-responsive">
+	{% for table in tables %}
+		{{ table|safe }}
+	{% endfor %}
+</div>
+
+<br/>
+
+<center>
+<a class="btn btn-outline-success" href="{{url_for('save_sheet', active=active.session.id, id=room.id)}}">Download</a>
+<button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#Remark">Remark</button>
+</center>
+
+<div class="modal fade" id="Remark" tabindex="-1" aria-labelledby="remarkLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="remarkLabel">Remark</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method = 'POST'>
+        	<select class="form-select" name="student">
+            	<option selected>Student</option>
+        		{% for student in students %}
+           	<option value="{{ student.id }}">
+           	    {{ student.name }} {{ student.surname }}
+           	</option>
+	        	{% endfor %}
+        	</select><br>
+        	{{ form.text(class="form-control", placeholder="Remark") }}
+      </div>
+          <div class="modal-footer">
+        	{{ form.submit(class='btn btn-secondary') }}
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<br/><br/>
+</div>
+{% endblock %}

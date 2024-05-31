@@ -1,51 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container-fluid">
+<br>
+
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-       <small>{{ message }}</small>
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
-<div class="row g-0">
-	<div class="col-1">
-	<a class="btn btn-sm  btn-outline-secondary" href="{{url_for('class_', id=subject.room.id)}}">Back</a>
-	</div>
-	<div class="col text-center">
-		<b class="text-center">{{ subject.title }}</b>
-	</div>
-</div><br>
+<p class="text-center fw-bold">{{ subject.title }}</p>
 
-<div class="alert alert-warning" role="alert">
-		<small>All student must have an Exam score and a Test score.</small>
+<div class="alert alert-warning text-center">
+    All student must have an Exam score and a Test score.
 </div>
 
 <div class="row">
-	<div class="col">
-<p class="text-center fw-bold">Test Scores</p>
+	<div class="col-sm-6 mb-sm-0">
+    <p class="text-center fw-bold">Test Scores</p>
 
-{% if current_user.id == subject.room.admin.id %}
-<form method = 'POST'>
-<div class="row g-1">
-	<div class="col">
+<form method="POST">
+	<div class="input-group mb-3">
+	{{ form.hidden_tag() }}
 	<input type="hidden" value="test" name="name">
-	<select class="form-select form-select-sm" name="student">
+	<select class="form-select" name="student">
     	<option >Student</option>
 		{% for student in students %}
-   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+   	<option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
    	 {% endfor %}
 	</select>
+	{{form.number(class="form-control", placeholder="Score")}}
+    {{form.submit(class="btn btn-secondary")}}
 	</div>
-	<div class="col">
-	{{form.number(class="form-control form-control-sm", placeholder="Score")}}<br/>
-	</div>
-	<div class="col">
-	<button type="submit" class="btn btn-sm btn-secondary">Add</button>
-	</div>
-</div>
 </form>
-{% endif %}
 
 <table class="table table-hover table-sm table-bordered">
   <thead>
@@ -57,7 +46,7 @@
   <tbody class="table-group-divider">
 	{% for test in tests %}
     <tr>
-      <td>{{ test.student.first_name }} {{ test.student.last_name }}</td>
+      <td>{{ test.student.name }} {{ test.student.surname }}</td>
 	  <td>{{ test.score }}</td>
     </tr>
     {% endfor %}
@@ -65,30 +54,23 @@
 </table>
 	</div>
 	
-	<div class="col">
+	<div class="col-sm-6">
 <p class="text-center fw-bold">Exam Scores</p>
 
-{% if current_user.id == subject.room.admin.id %}
-<form method = 'POST'>
-<div class="row g-1">
-	<div class="col">
+<form method="POST">
+	<div class="input-group mb-3">
+	{{ form.hidden_tag() }}
 	<input type="hidden" value="exam" name="name">
-	<select class="form-select form-select-sm" name="student">
+	<select class="form-select" name="student">
     	<option >Student</option>
 		{% for student in students %}
-   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+   	 <option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
    	 {% endfor %}
 	</select>
+	{{form.number(class="form-control", placeholder="Score")}}
+    {{form.submit(class="btn btn-secondary")}}
 	</div>
-	<div class="col">
-	{{form.number(class="form-control form-control-sm", placeholder="Score")}}<br/>
-	</div>
-	<div class="col">
-	<button type="submit" class="btn btn-sm btn-secondary">Add</button>
-	</div>
-</div>
 </form>
-{% endif %}
 
 <table class="table table-hover table-sm table-bordered">
   <thead>
@@ -100,13 +82,15 @@
   <tbody class="table-group-divider">
 	{% for exam in exams %}
     <tr>
-      <td>{{ exam.student.first_name }} {{ exam.student.last_name }}</td>
+      <td>{{ exam.student.name }} {{ exam.student.surname }}</td>
 	  <td>{{ exam.score }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 	</div>
-</div><br>
+</div>
 
+<br><br>
+</div>
 {% endblock %}

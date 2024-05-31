@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+<br>
+
+{% for message in get_flashed_messages() %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+       {{ message }}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+
+<div class="card">
+    <div class="card-header fw-bold text-center">Edit Information</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="name" value="profile">
+            {{ form.string(class="form-control", placeholder="Full Name",style="border: 0; border-radius:0; border-bottom: 0.15px solid #ced4da;") }}<br>
+            {{ form.email(class="form-control", placeholder="Email",style="border: 0; border-radius:0; border-bottom: 0.15px solid #ced4da;") }}<br>
+            {{ form.password(class="form-control", placeholder="Password",style="border: 0; border-radius:0; border-bottom: 0.15px solid #ced4da;") }}<br>
+            {{ form.submit(class="form-control btn-secondary") }}
+        </form>
+    </div>
+</div>
+
+<br>
+
+<div class="card">
+    <div class="card-header text-center fw-bold">Change Password</div>
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="name" value="password">
+            {{ form.old(class="form-control", placeholder="Old Password",style="border: 0; border-radius:0; border-bottom: 0.15px solid #ced4da;") }}<br>
+            {{ form.password(class="form-control", placeholder="New Password",style="border: 0; border-radius:0; border-bottom: 0.15px solid #ced4da;") }}<br>
+            {{ form.check(class="form-control", placeholder="Confirm Password",style="border: 0; border-radius:0; border-bottom: 0.15px solid #ced4da;") }}<br>
+            {{ form.submit(class="form-control btn-secondary") }}
+        </form>
+    </div>
+</div>
+
+
+
+<br/><br/>
+
+</div>
+{% endblock %}

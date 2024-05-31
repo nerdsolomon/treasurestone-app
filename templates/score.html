@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container">
+<br>
 
 <p class="text-center fw-bold fs-5">{{ subject.title }}</p><br/>
 
-<div class="card shadow ">
+<div class="card shadow" style="width:24rem;">
 	<div class="card-header">
 		<p class="text-center display-5">Your Score</p>
 	</div>
@@ -12,15 +14,16 @@
 		<br/>
 		<p class="card-title text-center display-2">{{ score }}/{{ cbts.pages }}</p>
 		<hr>
-		<p class="text-center">{{ current_user.first_name }} {{ current_user.last_name }}</p>
+		<p class="text-center">{{ current_user.name }} {{ current_user.other }} {{ current_user.surname }}</p>
 		<br/>
 	</div>
 </div>
 
-<br/>
+<br>
 <center>
 	<a href="{{url_for('student', id=current_user.id)}}" class="btn btn-outline-secondary">Return to dashboard</a>
 </center>
 
-
+<br><br>
+</div>
 {% endblock %}

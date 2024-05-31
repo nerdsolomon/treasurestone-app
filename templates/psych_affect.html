@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container-fluid">
+<br>
+
 {% for message in get_flashed_messages() %}
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-       <small>{{ message }}</small>
+       {{ message }}
        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 {% endfor %}
 
-<a class="btn btn-sm  btn-outline-secondary" href="{{url_for('class_', id=room.id)}}">Back</a><br><br>
 
 <div class="row">
-	<div class="col">
+	<div class="col-sm-6 mb-sm-0">
 <div class="card shadow">
-	<div class="card-header">
-	<b>Psychomotor Rating</b>
-	</div>
+	<div class="card-header text-center fw-bold">Psychomotor Rating</div>
 	<div class="card-body">
 	<form method = 'POST'>
 	<input type="hidden" value="psych" name="name">
 	<select class="form-select" name="student">
     	<option >STUDENTS</option>
 		{% for student in students %}
-   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+   	<option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
    	 {% endfor %}
 	</select><br/>
 	<select class="form-select" name="handle">
@@ -84,21 +84,19 @@
 	</center>
 	</form>
 	</div>
-</div>
+</div><br><br>
 	</div>
 
-	<div class="col">
+	<div class="col-sm-6">
 <div class="card shadow">
-	<div class="card-header">
-		<b>Affective Rating</b>
-	</div>
+	<div class="card-header text-center fw-bold">Affective Rating</div>
 	<div class="card-body">
 	<form method = 'POST'>
 	<input type="hidden" value="affect" name="name">
 	<select class="form-select" name="student">
     	<option >STUDENTS</option>
 		{% for student in students %}
-   	<option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+   	<option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
    	 {% endfor %}
 	</select><br/>
 	
@@ -182,5 +180,7 @@
 </div>
 	</div>
 </div>
-	
+
+<br><br>
+</div>
 {% endblock %}

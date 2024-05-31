@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+      <div class="container alert alert-success alert-dismissible fade show" role="alert">
+           {{ message }}
+           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for slide in slides %}
+	<div class="carousel-item {% if slide.id == slides.first().id %}active{% endif %}">
+	<img src="{{ url_for('static', filename='storage/'+slide.image)}}" class="w-100">
+	</div>
+    {% endfor %}
+  </div>
+</div>
+
+{% if active %}
+<div class="card ">
+	<div class="card-body">
+		<p class="display-5 card-title text-center">{{ active.session.session }}</p>
+		<hr>
+		<p class="fw-light text-center">{{ active.session.term }}</p>
+	</div>
+</div>
+{% endif %}
+
+<div class="bg-dark">
+    <br>
+    <p class="fw-light text-light text-center">Classrooms</p>
+    <p class="display-5 text-light text-center">{{ classrooms }}+</p>
+	<br>
+    <p class="fw-light text-light text-center">Subjects</p>
+    <p class="display-5 text-light text-center">{{ subjects }}+</p>
+	<br>
+    <p class="fw-light text-light text-center">Students</p>
+    <p class="display-5 text-light text-center">{{ students }}+</p>
+	<br>
+    <p class="fw-light text-light text-center">Staffs</p>
+    <p class="display-5 text-light text-center">{{ staffs }}+</p>
+	<br>
+</div>
+
+<div class="container-fluid">
+<br>
+<div class="row">
+    <div class="col-sm-6 mb-sm-0">
+	    <p class="fs-4 fw-bold">About School</p>
+		<p class="fw-light">Treasure Stone Schools is a dream come through born out of the need to address and redress the raising of independent and total learners, who would be problem solvers in all ramifications. Treasure Stone School is currently a Nursery and Primary school complemented with well equipped, spacious and well ventilated classrooms for learning. At Treasure Stone Schools, the staff work together as a team to ensure that every Treasure (Child) has a positive, happy and rewarding school experience towards becoming a global leader.</p>
+    </div>
+
+    <div class="col-sm-6">
+	    <p class="fs-4 fw-bold">Vision</p>
+		<p class="fw-light">Learning to rise to be institution of excellence, achieving full potential and bringing out the treasures in every child. </p>
+		
+	    <p class="fs-4 fw-bold">Mission</p>
+		<p class="fw-light">Help learners discover, develop and nurture the rich treasures deposited in them through provision of qualitative learning ambience that will make them functionally valuable and relivant to their environment.</p>
+    </div>
+
+    <div class="col-sm-6">
+	    <p class="fs-4 fw-bold">About Website</p>
+		<p class="fw-light">This website is an academic tool. It is used for the conduct of assessment through CBT (Computer Based Test), printing and storing of academic data.</p>
+
+    	<p class="fs-4 fw-bold">Contact</p>
+		<a class="fw-light nav-link text-dark" href="mailto:treasurestone@gmail.com">📧 treasurestone@gmail.com</a>
+		<p class="nav-link text-dark fw-light">
+		    ☎️ +234 123 456 7890<br>
+		    ☎️ +234 987 654 3210
+		</p>
+    </div>
+    
+    <div class="col-sm-6">
+    <p class="fs-4 fw-bold">Calendar</p>
+    <p class="text-center fw-light">{{ current }}</p>
+    
+    <table class="table table-sm table-bordered">
+        <tr>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+        </tr>
+        {% for week in calendar.monthcalendar(year, month) %}
+            <tr>
+                {% for day in week %}
+                    {% if day == 0 %}
+                        <td></td>
+                    {% else %}
+                        <td>
+                            <a class="btn {% if day == today %} btn-secondary {% endif %}" href="{{ url_for('data', day=day, month=month, year=year)}}">{{ day }}</a>
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+</div>
+
+</div>
+<br>
+{% endblock %}

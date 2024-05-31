@@ -1,35 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-       <small>{{ message }}</small>
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-{% endfor %}
+<div class="container-fluid">
+<br>
 
-<center>
-<div class="card shadow" style="width: 24em">
-	<div class="card-header"><p class="text-center"><b>Edit Question</b></p></div>
-	<div class="card-body">
-		<form method = 'POST' enctype="multipart/form-data">
-				{{ form.hidden_tag() }}
-				{{ form.question(class='form-control form-control-sm', placeholder= "write question...") }}
-				<br/>
-				<select class="form-select form-select-sm" name='type'>
-    				<option value={{selected_type}} selected="">{{selected_type}}</option>
-   					<option value="Exam">Exam</option>
-   					<option value="Test">Test</option>
-				</select>
-				
-				{{ form.answer(class='form-control', placeholder="Answer") }}<br>
-				{{ form.option1(class='form-control', placeholder="A.") }}<br>
-				{{ form.option2(class='form-control', placeholder="B.") }}<br>
-				{{ form.option3(class='form-control', placeholder="C.") }}<br>
-				{{ form.submit(class='form-control btn-secondary') }}
-			</form>
-	</div>
+<div class="card" style="width:24rem;">
+    <div class="card-header text-center">Edit Question</div>
+    <div class="card-body">
+<form method = 'POST'>
+	{{ form.hidden_tag() }}
+	{{ form.question(class='form-control', placeholder= "Question", rows="6") }}<br/>
+	<select class="form-select" name='type'>
+		<option value="{{ selected }}">{{ selected }}</option>
+		<option value="Exam">Exam</option>
+		<option value="Test">Test</option>
+	</select><br>
+	{{ form.answer(class='form-control', placeholder="Answer") }}<br>
+	{{ form.opt_one(class='form-control', placeholder="A.") }}<br>
+	{{ form.opt_two(class='form-control', placeholder="B.") }}<br>
+	{{ form.opt_three(class='form-control', placeholder="C.") }}<br>
+	{{ form.submit(class='btn btn-secondary') }}
+</form>
+    </div>
 </div>
-</center>
 
+<br><br>
+</div>
 {% endblock %}

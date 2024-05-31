@@ -1,44 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container">
+<br>
+
 {% for message in get_flashed_messages() %}
  <div class="alert alert-success alert-dismissible fade show" role="alert">
-       <small>{{ message }}</small>
+       {{ message }}
        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
  </div>
 {% endfor %}
 
 
-{% if current_user.room.announce %}
-
-<div class="alert alert-warning" role="alert">
-   <p class="text-center display-2">⚠️</p>
-   <p class="card-text fw-light">{{ current_user.room.announce  }}</p>
-</div><br>
-
-{% endif %}
-
-
 <div class="card shadow ">
-	<div class="card-header">
-		<center>
-			<b class="fs-3">TREASURE STONE</b><br>
-			<b>Academic Private School</b>
-		</center>
-	</div>
 	<div class="card-body">
-		<br/>
-		<p class="text-center display-1">🎓</p><br/>
-		<p class="display-3 card-title text-center">{{ current_user.first_name }} {{ current_user.last_name }}</p>
-		<hr class="dropdown-divider">
-		<center><small class="fw-light">EMAIL : {{ current_user.email }}</small></center>
-		<br/>
+	{% if current_user.image %}
+		<center><img class="object-fit-cover rounded-circle" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="120"></center>
+	{% else %}
+		<center><img class="object-fit-cover rounded-circle" src="{{ url_for('static',filename='default/default.png') }}" width="120"></center>
+	{% endif %}
+	<br>
+		<p class="display-4 card-title text-center">{{ current_user.name }} {{ current_user.other }} {{ current_user.surname }}</p>
+		<hr>
+		<p class="text-center fw-light">EMAIL : {{ current_user.email }}</p>
 	</div>
 </div>
+<br><br>
 
-<br/><br/>
-
-<b>Assessment Results</b><br/><br/>
+<p class="fw-bold">Assessment Results</p>
 
 <div class="card shadow">
 	<div class="card-body">
@@ -50,7 +39,8 @@
 		<a class="btn btn-outline-success" href="{{url_for('result', id=current_user.id)}}">View Results</a>
 	</div>
 </div>
-<br/>
 
 
+<br><br>
+</div>
 {% endblock %}
