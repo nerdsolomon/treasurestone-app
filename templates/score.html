@@ -4,24 +4,19 @@
 <div class="container">
 <br>
 
-<p class="text-center fw-bold fs-5">{{ subject.title }}</p><br/>
-
-<div class="card shadow" style="width:24rem;">
-	<div class="card-header">
-		<p class="text-center display-5">Your Score</p>
-	</div>
+<center>
+<div class="card shadow text-center" style="width:20rem;">
+	<div class="card-header fw-bold">Your Score</div>
 	<div class="card-body">
 		<br/>
-		<p class="card-title text-center display-2">{{ score }}/{{ cbts.pages }}</p>
+		<p class="card-title display-4">{{ score }}/{{ cbts.pages }}</p>
 		<hr>
-		<p class="text-center">{{ current_user.name }} {{ current_user.other }} {{ current_user.surname }}</p>
-		<br/>
+		<p>{{ current_user.name }} {{ current_user.other }} {{ current_user.surname }}</p>		
 	</div>
 </div>
 
-<br>
-<center>
-	<a href="{{url_for('student', id=current_user.id)}}" class="btn btn-outline-secondary">Return to dashboard</a>
+    <br><br>
+	<a href="{{url_for('student', id=current_user.id)}}" class="btn btn-outline-secondary">Return to Dashboard</a>
 </center>
 
 <br><br>

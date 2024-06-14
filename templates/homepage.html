@@ -2,13 +2,13 @@
 {% block content %}
 
 {% for message in get_flashed_messages() %}
-      <div class="container alert alert-success alert-dismissible fade show" role="alert">
-           {{ message }}
-           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
-<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+<div class="carousel slide carousel-fade" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for slide in slides %}
 	<div class="carousel-item {% if slide.id == slides.first().id %}active{% endif %}">
@@ -31,16 +31,16 @@
 <div class="bg-dark">
     <br>
     <p class="fw-light text-light text-center">Classrooms</p>
-    <p class="display-5 text-light text-center">{{ classrooms }}+</p>
+    <p class="display-5 text-light text-center">{{ class_num }}+</p>
 	<br>
     <p class="fw-light text-light text-center">Subjects</p>
-    <p class="display-5 text-light text-center">{{ subjects }}+</p>
+    <p class="display-5 text-light text-center">{{ subject_num }}+</p>
 	<br>
     <p class="fw-light text-light text-center">Students</p>
-    <p class="display-5 text-light text-center">{{ students }}+</p>
+    <p class="display-5 text-light text-center">{{ student_num }}+</p>
 	<br>
     <p class="fw-light text-light text-center">Staffs</p>
-    <p class="display-5 text-light text-center">{{ staffs }}+</p>
+    <p class="display-5 text-light text-center">{{ staff_num }}+</p>
 	<br>
 </div>
 
@@ -49,7 +49,7 @@
 <div class="row">
     <div class="col-sm-6 mb-sm-0">
 	    <p class="fs-4 fw-bold">About School</p>
-		<p class="fw-light">Treasure Stone Schools is a dream come through born out of the need to address and redress the raising of independent and total learners, who would be problem solvers in all ramifications. Treasure Stone School is currently a Nursery and Primary school complemented with well equipped, spacious and well ventilated classrooms for learning. At Treasure Stone Schools, the staff work together as a team to ensure that every Treasure (Child) has a positive, happy and rewarding school experience towards becoming a global leader.</p>
+		<p class="fw-light">Treasure Stone Schools is a dream come through born out of the need to address and redress the raising of independent and total learners, who would be problem solvers in all ramifications. <br><br>Treasure Stone School is currently a Nursery and Primary school complemented with well equipped, spacious and well ventilated classrooms for learning. <br><br>At Treasure Stone Schools, the staff work together as a team to ensure that every Treasure (Child) has a positive, happy and rewarding school experience towards becoming a global leader.</p>
     </div>
 
     <div class="col-sm-6">
@@ -65,10 +65,10 @@
 		<p class="fw-light">This website is an academic tool. It is used for the conduct of assessment through CBT (Computer Based Test), printing and storing of academic data.</p>
 
     	<p class="fs-4 fw-bold">Contact</p>
-		<a class="fw-light nav-link text-dark" href="mailto:treasurestone@gmail.com">📧 treasurestone@gmail.com</a>
 		<p class="nav-link text-dark fw-light">
 		    ☎️ +234 123 456 7890<br>
-		    ☎️ +234 987 654 3210
+		    ☎️ +234 987 654 3210<br>
+		    Email : <a href="mailto:treasurestone@gmail.com">treasurestone@gmail.com</a>
 		</p>
     </div>
     
@@ -87,17 +87,15 @@
             <th>Sun</th>
         </tr>
         {% for week in calendar.monthcalendar(year, month) %}
-            <tr>
-                {% for day in week %}
-                    {% if day == 0 %}
-                        <td></td>
-                    {% else %}
-                        <td>
-                            <a class="btn {% if day == today %} btn-secondary {% endif %}" href="{{ url_for('data', day=day, month=month, year=year)}}">{{ day }}</a>
-                        </td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
+        <tr>
+        {% for day in week %}
+            {% if day == 0 %}
+            <td></td>
+            {% else %}
+            <td class="{% if day == today %}text-light bg-success{% endif %}"> {{ day }}</td>
+            {% endif %}
+        {% endfor %}
+        </tr>
         {% endfor %}
     </table>
     </div>

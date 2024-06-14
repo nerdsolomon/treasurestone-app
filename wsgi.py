@@ -1,7 +1,7 @@
 from flask import render_template, redirect, flash, request, session, url_for, send_from_directory
 from models import app, db, Staff, Student, Class, Subject,Session, Active, CBT, Exam, Test, Slide, date, Psychomotor, Affective
 from functions import broadsheet, results, crop_image, allowed_file, ALLOWED_EXTENSIONS, affect, psycho
-from webforms import PostForm, StudentForm, LoginForm, CBTForm
+from webforms import PostForm, StudentForm, CBTForm
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.utils import secure_filename
 import uuid as uuid
@@ -53,7 +53,6 @@ def base():
             room = Class.query.filter_by(id=current_user.room.id).first()
             subjects = Subject.query.filter_by(room_id=room.id)
             return dict(student=student, account=account, subjects=subjects, time=time, active=active)
-            
         elif account == "Staff":
             staff = Staff.query.filter_by(id=current_user.id).first()
             room = Class.query.filter_by(staff_id=current_user.id).first()
@@ -61,7 +60,6 @@ def base():
             	flash("You've not been assigned a classroom")
             	return dict(time=time, active=active)
             return dict(room=room, account=account, staff=staff, time=time, active=active)
-
     return dict(time=time, active=active)
     
 
@@ -70,23 +68,12 @@ def base():
 def homepage():
 	choices.clear(), answers.clear()
 	slides = Slide.query.order_by(Slide.id.desc())
-	year = int(date.strftime('%Y'))
-	month = int(date.strftime('%m'))
-	today = int(date.strftime('%d'))
-	current = date.strftime('%B, %Y')
-	students = Student.query.count()
-	staffs = Staff.query.count()
-	subjects = Subject.query.count()
-	classrooms = Class.query.count()
-	return render_template("homepage.html", slides=slides, year=year, today=today,month=month, calendar=calendar, current=current, students=students, staffs=staffs, subjects=subjects, classrooms=classrooms)
-    
+	year, month = int(date.strftime('%Y')), int(date.strftime('%m'))
+	today, current = int(date.strftime('%d')), date.strftime('%B, %Y')
+	students, staffs = Student.query.count(), Staff.query.count()
+	classrooms, subjects = Class.query.count(), Subject.query.count()
+	return render_template("homepage.html", slides=slides, year=year, today=today,month=month, calendar=calendar, current=current, student_num=students, staff_num=staffs, subject_num=subjects, class_num=classrooms)
 
- 
-@app.route('/data/<day>/<month>/<year>')
-def data(day, month, year):
-    dates = f"{day}-{month}-{year}"
-    return render_template('data.html', dates=dates)
- 
  
  
 @app.route('/download/<path:filename>')
@@ -104,7 +91,6 @@ def download(filename):
 @login_required
 def save_sheet(active, id):
     class_obj = Class.query.get(id)
-
     if class_obj:
         sheet_data = broadsheet(active, id)
         response = Response(sheet_data.to_csv(), content_type="text/csv")
@@ -117,8 +103,8 @@ def save_sheet(active, id):
         
 @app.route('/staff/login', methods=['POST', 'GET'])
 def staff_login():
-    form = LoginForm()
-    if form.validate_on_submit():
+    form = PostForm()
+    if request.method == "POST":
         staff = Staff.query.filter_by(email=form.email.data.lower()).first()
         if staff:
             if check_password_hash(staff.password,form.password.data):
@@ -136,8 +122,8 @@ def staff_login():
  
 @app.route('/student/login/<int:active>', methods=['POST', 'GET'])
 def student_login(active):
-    form = LoginForm()
-    if form.validate_on_submit():
+    form = PostForm()
+    if request.method == "POST":
         user = Student.query.filter_by(session_id=active, email=form.email.data.lower()).first()
         if user:
             if check_password_hash(user.password, form.password.data):
@@ -179,57 +165,75 @@ def logout():
 
 
 
-choices = []
-answers = []
+choices, answers = [], []
  
-@app.route('/cbt/<int:id>/<action_type>', methods=['POST', 'GET'])
+@app.route("/cbt/<int:id>/<type>", methods=['POST', 'GET'])
 @login_required
-def cbt(id, action_type):
-    subject = Subject.query.filter_by(id=id).first()
-    
-    if action_type == "exam":
-    	exam = Exam.query.filter_by(subject_id=id, student_id=current_user.id).all()
-    	if exam:
-    		flash("Exam already taken.")
-    		return redirect(url_for('subject', id=id))
-    		
-    else: #action_type == test
-    	test = Test.query.filter_by(subject_id=id, student_id=current_user.id).all()
-    	if test:
-    		flash("Test already taken.")
-    		return redirect(url_for('subject', id=id))
-    	
-    
+def cbt(id, type):
+    record = Exam.query.filter_by(subject_id=id, student_id=current_user.id).all() if type == "Exam" else Test.query.filter_by(subject_id=id, student_id=current_user.id).all()
+    if record:
+        flash("Assessment already taken.")
+        return redirect(url_for('subject', id=id)) 
     ROWS_PER_PAGE = 1
     page = request.args.get('page', 1, type=int)
-    if action_type == "exam":
-    	cbts = CBT.query.filter_by(subject_id=id, type="Exam").paginate(page=page, per_page=ROWS_PER_PAGE)
-    else: #action_type == test
-    	cbts = CBT.query.filter_by(subject_id=id, type="Test").paginate(page=page, per_page=ROWS_PER_PAGE)
-
+    cbts = CBT.query.filter_by(subject_id=id, type=type).paginate(page=page, per_page=ROWS_PER_PAGE)
     if request.method == "POST":
         try:
-            choice = request.form["option"]
             for cbt in cbts.items:
-                choices.append(choice)
-                answers.append(cbt.answer)
-
+                choices.append(request.form["option"])
+                answers.append(cbt.answer)   
             if cbts.page == cbts.pages:
                 score = sum(choice == answer for choice, answer in zip(choices, answers))
-                
-                if action_type == "exam":
-                	exam = Exam(score=score, student_id=current_user.id, subject_id=id)
-                	store(exam)
-                else: #action_type == test
-                	test = Test(score=score, student_id=current_user.id, subject_id=id)
-                	store(test)
-                
-                return render_template('score.html', subject=subject, cbts=cbts, score=score)
-
+                record = Exam(score=score, student_id=current_user.id, subject_id=id) if type == "Exam" else Test(score=score, student_id=current_user.id, subject_id=id)
+                store(record)
+                return render_template('score.html', score=score, cbts=cbts)
+            return redirect(url_for('cbt', id=id, type=type, page=cbts.next_num))
         except KeyError:
-            flash('You must make a choice to continue...')
-            return redirect(url_for('cbt', page=cbts.next_num, id=subject.id))
-    return render_template('cbt.html', subject=subject, cbts=cbts)
+            flash('You must make a choice to continue.')
+            return redirect(url_for('cbt', id=id, type=type, page=cbts.page))
+    return render_template('cbt.html', id=id, type=type,cbts=cbts)
+
+
+
+@app.route('/subject/questions/<int:id>', methods=["POST", "GET"])
+@login_required
+def subject_questions(id):
+    form = CBTForm()
+    subject = Subject.query.filter_by(id=id).first()
+    questions_per_page = 20
+    try:
+    	page = request.args.get('page', 1, type=int)
+    	cbts = CBT.query.filter_by(subject_id=id).order_by(CBT.id.desc()).paginate(page=page, per_page=questions_per_page)
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}")
+        return redirect(url_for("/"))
+
+    if request.method == "POST":
+    	form_type = request.form["name"]
+    	if form_type == "setQ":
+    		if form.image.data:
+    			file = form.image.data
+    			if file and allowed_file(file.filename):
+    				file_name = str(uuid.uuid1())  + "-" + secure_filename(file.filename)
+    				image = crop_image(file.read())
+    				image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
+    				cbt = CBT(question=form.question.data, answer=form.answer.data, opt_one=form.opt_one.data, opt_two=form.opt_two.data, opt_three=form.opt_three.data, image=file_name, type=form.type.data, subject_id=id)
+    				store(cbt)
+    			else:
+    				flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
+    		else:
+    			cbt = CBT(question=form.question.data, answer=form.answer.data, opt_one=form.opt_one.data, opt_two=form.opt_two.data, opt_three=form.opt_three.data, type=form.type.data, subject_id=id)
+    			store(cbt)
+    		flash("Question added.")
+    		return redirect(url_for('subject_questions', id=id))
+    	
+    	elif form_type == "edit":
+    		cbt = CBT.query.filter_by(id=request.form["qst"]).first()
+    		cbt.question, cbt.answer, cbt.opt_one, cbt.opt_two, cbt.opt_three, cbt.type = form.question.data, form.answer.data, form.opt_one.data, form.opt_two.data, form.opt_three.data, form.type.data
+    		store(cbt)
+    		flash("Question Edited")
+    		return redirect(url_for('subject_questions', id=id))	
+    return render_template('subject_questions.html', cbts=cbts, form=form, subject=subject)
 
 
 
@@ -242,11 +246,11 @@ def operation():
 	sessions = Session.query.order_by(-Session.id)
 	
 	if request.method == "POST":
-		form_type = request.form["name"]
+		form_type = form.name.data
 		if form_type == "slide":
 			file = form.file.data
 			if file and allowed_file(file.filename):
-				file_name = str(uuid.uuid1())  + "-" + secure_filename(file.filename)
+				file_name = str(uuid.uuid1())+"-"+secure_filename(file.filename)
 				image = crop_image(file.read())
 				image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
 				images = Slide(image=file_name)
@@ -282,58 +286,42 @@ def classes():
     classes = Class.query.order_by(Class.id)
 
     if request.method == "POST":
-        action_type = request.form["name"]
-
-        try:
-            if action_type == "class":
-                new_class = Class(title=form.string.data.upper())
-                store(new_class)
-                flash("Class added.")
-                
-            elif action_type == "staff":
-                selected_class = Class.query.get(request.form["class"])
-                selected_class.staff_id = request.form["staff"]
-                store(selected_class)
-                flash("Teacher assigned.")
-                
-            elif action_type == "edit":
-                selected_class = Class.query.get(request.form["class"])
-                selected_class.title = form.string.data.upper()
-                store(selected_class)
-                
-        except Exception as e:
-            flash(f"An error occurred. Check forms and try again.")
-
+        action_type = form.name.data
+        if action_type == "class":
+            new_class = Class(title=form.string.data.upper())
+            store(new_class)
+        elif action_type == "staff":
+            selected_class = Class.query.get(request.form["room"])
+            selected_class.staff_id = request.form["staff"]
+            store(selected_class)
+            flash("Teacher assigned.")
+        elif action_type == "edit":
+            selected_class = Class.query.get(request.form["room"])
+            selected_class.title = form.string.data.upper()
+            store(selected_class)
     return render_template('classes.html', classes=classes, form=form, staffs=staff)
 
 
 
 @app.route("/staffs", methods=['POST', 'GET'])
-@login_required
+#@login_required
 def staffs():
     form = PostForm()
     staffs = Staff.query.order_by(Staff.id)
-
     if request.method == "POST":
-        form_type = request.form["name"]
+        form_type = form.name.data
         if form_type == "add":
             new_staff = Staff(name=form.string.data, email=form.email.data, role=request.form["role"], password=generate_password_hash(form.password.data))
             store(new_staff)
             flash("Staff added")
-            form.string.data, form.email.data, form.password.data = "","",""
-        elif form_type == "name":
+            
+        elif form_type == "edit":
             staff = Staff.query.filter_by(id=request.form["staff"]).first()
             staff.name = form.string.data
-            store(staff)
-        elif form_type == "email":
-            staff = Staff.query.filter_by(id=request.form["staff"]).first()
             staff.email = form.email.data
+            staff.role = request.form["role"]
             store(staff)
-        elif form_type == "role":
-            staff = Staff.query.filter_by(id=request.form["staff"]).first()
-            staff.role = form.string.data.capitalize()
-            store(staff)
-    
+        return redirect(url_for('staffs'))
     return render_template("staffs.html", form=form, staffs=staffs)
     
 
@@ -345,7 +333,7 @@ def staff_edit(id):
     staff = Staff.query.filter_by(id=id).first()
 
     if request.method == "POST":
-        action_type = request.form["name"]
+        action_type = form.name.data
         if action_type == "profile":
             if check_password_hash(staff.password, form.password.data):
                 staff.name = form.string.data
@@ -377,7 +365,7 @@ def classroom(id):
     subjects = Subject.query.filter_by(room_id=id)
 
     if request.method == "POST":
-        action_type = request.form["name"]
+        action_type = form.name.data
 
         if action_type == "subject":
             new_subject = Subject(title=form.string.data.upper(), room_id=id)
@@ -425,8 +413,8 @@ def students(active, id):
                 name=form.name.data.capitalize(),
                 other=form.other.data.capitalize(),
                 surname=form.surname.data.capitalize(),
-                email=form.email.data.lower(),
-                sex=request.form['gender'],
+                email=f"{form.name.data.lower()}{form.surname.data.lower()}@tsaps.edu",
+                sex=form.sex.data,
                 image=file_name,
                 password=generate_password_hash(form.password.data),
                 room_id=id,
@@ -437,21 +425,14 @@ def students(active, id):
             else:
                 flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
                 
-        elif form_type == "names":
+        elif form_type == "edit":
             student = Student.query.filter_by(id=request.form["student"]).first()
             student.name = form.name.data
-            store(student)
-            
-        elif form_type == "other":
-            student = Student.query.filter_by(id=request.form["student"]).first()
             student.other = form.other.data
-            store(student)
-            
-        elif form_type == "surname":
-            student = Student.query.filter_by(id=request.form["student"]).first()
             student.surname = form.surname.data
+            student.sex = form.sex.data
+            student.email = f"{form.name.data.lower()}{form.surname.data.lower()}@tsaps.edu"
             store(student)
-
     return render_template("students.html", students=students, form=form)
 
 
@@ -468,70 +449,17 @@ def broadsheets(active, id):
 					student_id = request.form["student"]
 					student = Student.query.filter_by(id=student_id).first()
 					student.remark = form.text.data
-						
 					if not student_id or not form.text.data:
 						flash("You must fill all forms")
 					else:
 						store(student)
-				
 				except KeyError:
-					flash("Invalid form submission")
-					
+					flash("Invalid form submission")			
 		return render_template("broadsheet.html", tables=[sheet.to_html(classes="table table-hover table-sm table-bordered")], students=students, form=form)
 	except:
 		flash("All Student must have a score for every subject.")
 		return redirect("/")
 		
-
-
-@app.route('/subject/questions/<int:id>', methods=["POST", "GET"])
-@login_required
-def subject_questions(id):
-    form = CBTForm()
-    subject = Subject.query.filter_by(id=id).first()
-    questions_per_page = 1
-    try:
-    	page = request.args.get('page', 1, type=int)
-    	cbts = CBT.query.filter_by(subject_id=id).order_by(CBT.id.desc()).paginate(page=page, per_page=questions_per_page)
-    except Exception as e:
-        flash(f"An error occurred: {str(e)}")
-        return redirect(url_for("/"))
-
-    if request.method == "POST":
-    	form_type = request.form["name"]
-    	if form_type == "setQ":
-    		if form.image.data:
-    			file = form.image.data
-    			if file and allowed_file(file.filename):
-    				file_name = str(uuid.uuid1())  + "-" + secure_filename(file.filename)
-    				image = crop_image(file.read())
-    				image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
-    				cbt = CBT(question=form.question.data, answer=form.answer.data, opt_one=form.opt_one.data, opt_two=form.opt_two.data, opt_three=form.opt_three.data, image=file_name, type=request.form["type"], subject_id=id)
-    				store(cbt)
-    			else:
-    				flash("Invalid file type. Allowed types: {}".format(", ".join(ALLOWED_EXTENSIONS)))
-    		else:
-    			cbt = CBT(question=form.question.data, answer=form.answer.data, opt_one=form.opt_one.data, opt_two=form.opt_two.data, opt_three=form.opt_three.data, type=request.form["type"], subject_id=id)
-    			store(cbt)
-    		flash("Question added.")
-    		
-    return render_template('subject_questions.html', cbts=cbts, form=form, subject=subject)
-
-
-
-@app.route('/subject/question/edit/<int:id>', methods=["POST", "GET"])
-@login_required
-def edit_question(id):
-    cbt = CBT.query.filter_by(id=id).first()
-    form = CBTForm()
-    if request.method == "POST":
-        cbt.question, cbt.answer, cbt.opt_one, cbt.opt_two, cbt.opt_three, cbt.type = form.question.data, form.answer.data, form.opt_one.data, form.opt_two.data, form.opt_three.data, request.form['type']
-        store(cbt)
-        flash("Question Edited")
-        return redirect(url_for('subject_questions', id=cbt.subject.id))
-    form.question.data, form.answer.data, form.opt_one.data, form.opt_two.data, form.opt_three.data, selected_type = cbt.question, cbt.answer, cbt.opt_one, cbt.opt_two, cbt.opt_three, cbt.type
-    return render_template("edit_question.html", form=form, cbt=cbt, selected=selected_type)
-
 
 
 @app.route('/view-scores/<int:id>', methods=['POST', 'GET'])
@@ -544,7 +472,7 @@ def view_scores(id):
     tests = Test.query.filter_by(subject_id=subject.id)
     
     if request.method == "POST":
-        action_type = request.form["name"]
+        action_type = form.name.data
         student = request.form["student"]
         score = int(form.number.data)
         
@@ -593,9 +521,7 @@ def slide_delete(id):
 @login_required
 def result(id):
 	try:
-	   sheet = results(id)
-	   psych = psycho(id)
-	   affective = affect(id)
+	   sheet, psych, affective = results(id), psycho(id), affect(id)
 	   return render_template("result.html", tables=[sheet.to_html(justify="left",classes="table table-hover table-sm table-bordered")], psych=[psych.to_html(justify="left",classes="table table-hover table-sm table-bordered")], affective=[affective.to_html(justify="left",classes="table table-hover table-sm table-bordered")])
 	except:
 		flash("Final result not ready.")
@@ -696,11 +622,8 @@ def psych_affect(id, active):
                     speech=request.form["speech"], write=request.form["write"],
                     public=request.form["public"], sport=request.form["sport"]
                 )
-                if handle or draw or speech or write or public or sport == "":
-                    flash("Must fill all forms!")
-                else:
-                    store(new_psych)
-                    flash("Psychomotor graded")
+                store(new_psych)
+                flash("Psychomotor graded")
 
         elif action_type == "affect":
             existing_affect = Affective.query.filter_by(student_id=student_id).first()
@@ -713,10 +636,7 @@ def psych_affect(id, active):
                     polite=request.form["polite"], calm=request.form["calm"],
                     obey=request.form["obey"], rely=request.form["rely"]
                 )
-                if attentive or punctual or honest or neat or polite or calm or obey or rely == "":
-                    flash("Must fill all forms!")
-                else:
-                    store(new_affect)
-                    flash("Affective graded")
-    return render_template("psych_affect.html", students=students)
+                store(new_affect)
+                flash("Affective graded")
+    return render_template("psych_affect.html",students=students)
 

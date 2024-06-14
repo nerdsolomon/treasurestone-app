@@ -27,7 +27,7 @@ def broadsheet(active, id):
     new["Average"] = new["Added Total"] / len(student_info)
     new["Remark"] = [i.remark for i in student_data]
     new.index.name = None
-    broadsheet = new.swaplevel(1, 0, axis=1)
+    broadsheet = new.swaplevel(1, 0, axis=1).sort_index(axis=1)
     return broadsheet
 
 

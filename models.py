@@ -38,11 +38,13 @@ class Student(db.Model, UserMixin):
 	email = db.Column(db.String, nullable=False)
 	sex = db.Column(db.String, nullable=False)
 	password = db.Column(db.String, nullable=False)
+	remark = db.Column(db.String)
 	session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete="CASCADE"))
 	room_id = db.Column(db.Integer, db.ForeignKey('class.id', ondelete="CASCADE"))
 	test_id = db.relationship('Test', backref='student', cascade="all, delete-orphan")
 	exam_id = db.relationship('Exam', backref='student', cascade="all, delete-orphan")
-	remark = db.Column(db.String)
+	psych_id = db.relationship("Psychomotor", backref='student', cascade="all, delete-orphan")
+	affect_id = db.relationship("Affective", backref='student', cascade="all, delete-orphan")
 	
 	
 class Class(db.Model):

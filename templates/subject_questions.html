@@ -5,81 +5,23 @@
 <br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
 <p class="fw-bold text-center">{{ subject.title }} QUESTIONS</p>
 
 <center>
-    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addQues">Add Question</button>
+<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addQues">Add Question</button>
 </center><br>
 
-<div class="row">
-	{% for cbt in cbts.items %}
-    <div class="col-sm-4 mb-3">
-	<div class="card">
-		{% if cbt.image %}
-		<img src="{{url_for('static', filename='storage/'+cbt.image )}}" class="object-fit-cover" width="100%">
-		{% endif %}
-		<div class="card-body">
-		Question : <span style="white-space:pre-wrap !important;">{{ cbt.question }}</span><br>
-		Answer : {{ cbt.answer }}<br>
-		A : {{ cbt.opt_one }}<br>
-		B : {{ cbt.opt_two }}<br>
-		C : {{ cbt.opt_three }}<br>
-		Type : {{ cbt.type }}
-   			<div class="dropdown">
-		    		<a class="dropdown-toggle"></a>
-		    		<div class="dropdown-content">
-		    		<a href="{{url_for('edit_question', id=cbt.id)}}">Edit</a>
-		    		<a href="{{url_for('question_delete', num=subject.id, id=cbt.id)}}">Delete</a>
-				</div>
-			</div>
-		</div>
-	</div>
-    </div>
-	{% endfor %}
-</div>
-	
-<!-- Pagination Links-->
-<div class="text-right">
-    <a href="{{ url_for('subject_questions', id=subject.id, page=cbts.prev_num) }}" class="btn btn-sm btn-outline-dark {% if cbts.page == 1 %}disabled{% endif %}">
-    Back
-    </a>
-<!-- Loop through the number of pages to display a link for each-->
-	{% for page_num in cbts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-    
-    	{% if page_num %}
-<!-- Check for the active page and set the link to "Active"-->
-            {% if cbts.page == page_num %}
-            <a href="{{ url_for('subject_questions', id=subject.id,page=page_num) }}"class="btn btn-sm btn-dark">{{ page_num }}</a>
-            
-            {% else %}
-            <a href="{{ url_for('subject_questions', id=subject.id,page=page_num) }}"
-               class="btn btn-sm btn-outline-dark">
-                {{ page_num }}
-            </a>
-            {% endif %}
-        {% else %}
-        ...
-        {% endif %}
-    {% endfor %}
-    <a href="{{ url_for('subject_questions',id=subject.id, page=cbts.next_num) }}"
-       class="btn btn-sm btn-outline-dark 
-       {% if cbts.page == cbts.pages %}disabled{% endif %}">
-        Next
-    </a>
-</div>
-	
-
-<div class="modal fade" id="addQues" tabindex="-1" aria-labelledby="addQuesLabel" aria-hidden="true">
+<div class="modal" id="addQues" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="addQuesLabel">Add Question</h1>
+        <h1 class="modal-title fs-5">Add Question</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -105,6 +47,86 @@
         </form>
     </div>
   </div>
+</div>
+
+
+<div class="row g-1">
+	{% for cbt in cbts.items %}
+    <div class="col-sm-4 mb-sm-0">
+	    <div class="card">
+	    	{% if cbt.image %}
+		    <img src="{{url_for('static', filename='storage/'+cbt.image )}}" class="object-fit-cover" width="100%">
+	    	{% endif %}
+		    <div class="card-body">
+		    Question : <span style="white-space:pre-wrap !important;">{{ cbt.question }}</span><br>
+		    Answer : {{ cbt.answer }}<br>
+	    	A : {{ cbt.opt_one }}<br>
+	    	B : {{ cbt.opt_two }}<br>
+	    	C : {{ cbt.opt_three }}<br>
+	    	Type : {{ cbt.type }}
+   		<div class="dropdown float-end">
+		       <a class="dropdown-toggle"></a>
+		       <div class="dropdown-content" style=" right: 0;">
+		    	  <a href="#form{{ cbt.id }}" data-bs-toggle="modal">Edit</a>
+		    	  <a href="{{url_for('question_delete', num=subject.id, id=cbt.id)}}">Delete</a>
+			   </div>
+		    </div>
+		    </div>
+	    </div>
+    </div>
+    
+ <div class="modal" id="form{{ cbt.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Edit Question</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <form method='POST'>
+                <input type="hidden" value="{{ cbt.id }}" name="qst">
+                <input type="hidden" value="edit" name="name">
+                <textarea class='form-control' placeholder="Question" name="question">{{ cbt.question }}</textarea><br>
+                <select class="form-select" name='type'>
+		            <option value="{{ cbt.type }}">{{ cbt.type  }}</option>
+		            <option value="Exam">Exam</option>
+	            	<option value="Test">Test</option>
+            	</select><br>
+	            {{ form.answer(class='form-control', value=cbt.answer) }}
+	            <br>
+	            {{ form.opt_one(class='form-control', value=cbt.opt_one) }}<br>
+	            {{ form.opt_two(class='form-control', value=cbt.opt_two) }}<br>
+            	{{ form.opt_three(class='form-control', value=cbt.opt_three) }}
+       </div>
+          <div class="modal-footer">
+        	{{ form.submit(class='btn btn-secondary') }}
+          </div>
+        </form>
+    </div>
+  </div>
+</div>  
+    
+	{% endfor %}
+</div>
+	
+<br><br>
+<div class="text-center">
+    <a href="{{ url_for('subject_questions', id=subject.id, page=cbts.prev_num) }}" class="btn btn-sm btn-outline-dark {% if cbts.page == 1 %}disabled{% endif %}">Back</a>
+    
+	{% for page_num in cbts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+	
+    	{% if page_num %}
+            {% if cbts.page == page_num %}
+     <a href="{{ url_for('subject_questions', id=subject.id,page=page_num) }}"class="btn btn-sm btn-dark">{{ page_num }}</a>
+            {% else %}
+    <a href="{{ url_for('subject_questions', id=subject.id,page=page_num) }}" class="btn btn-sm btn-outline-dark">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+        ...
+        {% endif %}
+    {% endfor %}
+    
+    <a href="{{ url_for('subject_questions',id=subject.id, page=cbts.next_num) }}" class="btn btn-sm btn-outline-dark {% if cbts.page == cbts.pages %}disabled{% endif %}">Next</a>
 </div>
 
 

@@ -5,23 +5,23 @@
 <br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
 
 <center>
 <form method = 'POST'>
-	<div class="input-group mb-3" style="width:24rem;">
+	<div class="input-group gap-1" style="width:20rem;">
 		{{ form.hidden_tag() }}
 		<input type="hidden" value="class" name="name">	
-		{{ form.string(class="form-control form-control-lg",placeholder="Add Class") }}
-		{{ form.submit(class='btn btn-lg btn-secondary') }}
+		{{ form.string(class="form-control rounded",placeholder="Add Class") }}
+		{{ form.submit(class='btn rounded btn-secondary') }}
 	</div>
 </form>
-</center>
+</center><br>
 
 <table class="table table-hover table-sm table-bordered">
   <thead>
@@ -35,21 +35,20 @@
     <tr>
       <td>
         <form method="POST">
-           <input type="hidden" value="{{ class.id }}" name="class">
+           <input type="hidden" value="{{ class.id }}" name="room">
        	<input type="hidden" value="edit" name="name">
            {{ form.hidden_tag() }}
        	   {{ form.string(value=class.title, style="border: 0; background-color: transparent; border-radius:0;", class="form-control") }}
         </form>
       </td>
-      <td>{{ class.staff.name }}</td>
 	 <td>
 <form method = 'POST'>
-	<div class="input-group mb-3">
+	<div class="input-group">
 	{{ form.hidden_tag() }}
 	<input type="hidden" value="staff" name="name">
-	<input type="hidden" value="{{ class.id }}" name="class">	
-	<select class="form-select form-select-sm" name="staff">
-		<option >Teacher</option>
+	<input type="hidden" value="{{ class.id }}" name="room">	
+	<select class="form-select" name="staff" style="border: 0; background-color: transparent; border-radius:0;">
+		<option >{{ class.staff.name }}</option>
 		{% for staff in staffs %}
 		<option value="{{ staff.id }}">{{ staff.name }}</option>
 		{% endfor %}

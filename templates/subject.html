@@ -5,10 +5,10 @@
 <br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
 <p class="text-center fw-bold fs-5">{{ subject.room.title }}</p>
@@ -36,8 +36,8 @@
 			You are required to select an answer before moving to the next question. When next is clicked, your choice will be submitted immediately, so revisiting a question is <b>NOT</b> an option.
 		</p>
         <div class="row">
-        		<a class="btn col text-primary" href="{{url_for('cbt', id=subject.id, action_type='test')}}">Begin Test</a>
-        		<a class="btn text-primary col" href="{{url_for('cbt', id=subject.id, action_type='exam')}}">Begin Exam</a>
+        		<a class="btn col text-primary" href="{{url_for('cbt', id=subject.id, type='Test')}}">Begin Test</a>
+        		<a class="btn text-primary col" href="{{url_for('cbt', id=subject.id, type='Exam')}}">Begin Exam</a>
         </div>
     </div>
 </div>

@@ -14,14 +14,14 @@
 <center>
 <p class="fw-bold fs-3">Staff Login</p>
 
-<div class="card shadow" style="width: 24rem;">
+<div class="card shadow" style="width: 20rem;">
 	<div class="card-body">
 
 	<form method = 'POST' enctype="multipart/form-data">
 		{{ form.hidden_tag() }}
 		{{ form.email(placeholder="Email", class='form-control') }}<br/>
 		{{ form.password(placeholder="Password", class='form-control') }}<br/>
-		{{ form.submit(class='btn btn-secondary') }}
+		<button type="submit" class='btn btn-secondary'>Sign In</button>
 	</form>
 	
 	</div>

@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid">
+<div class="container">
 <br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
 <p class="text-center fw-bold">{{ room.title }}</p>
 
 <center>
 <form method = 'POST'>
-	<div class="input-group mb-3" style="width:24rem;">
+	<div class="input-group gap-1" style="width:20rem;">
 	{{ form.hidden_tag() }}
 	<input type="hidden" value="subject" name="name">	
-	{{ form.string(class="form-control form-control-lg",placeholder="Add Subject") }}
-	{{ form.submit(class='btn btn-lg btn-secondary') }}
+	{{ form.string(class="form-control rounded",placeholder="Add Subject") }}
+	{{ form.submit(class='btn rounded btn-secondary') }}
 	</div>
 </form>
 </center>

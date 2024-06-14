@@ -3,13 +3,8 @@ from wtforms.validators import DataRequired
 from wtforms import StringField, SubmitField, PasswordField, TextAreaField, FileField, EmailField, IntegerField
 
 
-class LoginForm(FlaskForm):
-	email = EmailField(validators=[DataRequired()])
-	password = PasswordField(validators=[DataRequired()])
-	submit = SubmitField('Sign in')
-	
-	
 class PostForm(FlaskForm):
+	name = StringField(validators=[DataRequired()])
 	number = IntegerField(validators=[DataRequired()])
 	string = StringField(validators=[DataRequired()])
 	text = TextAreaField(validators=[DataRequired()])
@@ -25,6 +20,7 @@ class StudentForm(FlaskForm):
 	name = StringField(validators=[DataRequired()])
 	other = StringField(validators=[DataRequired()])
 	surname = StringField(validators=[DataRequired()])
+	sex = StringField(validators=[DataRequired()])
 	email = EmailField(validators=[DataRequired()])
 	password = PasswordField(validators=[DataRequired()])
 	file = FileField(validators=[DataRequired()])
@@ -37,6 +33,7 @@ class CBTForm(FlaskForm):
 	opt_one = StringField(validators=[DataRequired()])
 	opt_two  = StringField(validators=[DataRequired()])
 	opt_three = StringField(validators=[DataRequired()])
+	type = StringField(validators=[DataRequired()])
 	image = FileField()
 	submit = SubmitField("Done")
 	

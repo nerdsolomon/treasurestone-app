@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid">
+<div class="container">
 <br>
 
-	{% if current_user.image %}
-		<center><img class="object-fit-cover rounded" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="100"></center>
-	{% else %}
-		<center><img class="object-fit-cover rounded" src="{{ url_for('static',filename='default.png') }}" width="100"></center>
-	{% endif %}
+<center>
+<img class="rounded" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="80">
+</center>
 	
-<p class="text-center"><small>
+<p class="text-center">
+    <small>
 	{{ current_user.name }} {{ current_user.other }} {{ current_user.surname }}<br>
 	{{ current_user.room.title }}<br>
 	{{ active.session.session }} {{ active.session.term }}<br>
 	<b>Class Teacher : </b>{{ current_user.room.staff.name }}<br>
-</small></p>
+    </small>
+</p>
 
 <div class="table-responsive" style="font-size: 12px;">
 	{% for table in tables %}
@@ -24,14 +24,14 @@
 </div>
 
 <div class="row">
-<div class="col">
+<div class="col-sm-6 mb-sm-0">
 <div class="table-responsive" style="font-size: 12px;">
 	{% for psych in psych %}
 		{{ psych|safe }}
 	{% endfor %}
 </div>
 </div>
-<div class="col">
+<div class="col-sm-6">
 <div class="table-responsive" style="font-size: 12px;">
 	{% for affective in affective %}
 		{{ affective|safe }}
@@ -40,9 +40,10 @@
 </div>
 </div>
 
-<p><b>Class Teacher's Remark : </b>{{ current_user.remark }}</p>
+<p class="text-center">
+    <b>Class Teacher's Remark : </b>{{ current_user.remark }}
+</p>
 
-<br/><br/>
-
+<br>
 </div>
 {% endblock %}

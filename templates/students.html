@@ -1,72 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid">
-<br>
+<div class="container-fluid"><br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
-
 
 <p class="text-center fw-bold">{{ room.title }}</p>
 
 <center>
-    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addStudent">Add Student</button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addStudent">Add Student</button>
 </center><br>
 
-
-<table class="table table-hover table-sm table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Other</th>
-      <th scope="col">Surname</th>
-	  <th scope="col">Sex</th>
-      <th scope="col">Email</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-	{% for student in students %}
-    <tr>
-    <form method="POST">
-       <input type="hidden" value="{{ student.id }}" name="student">
-       <input type="hidden" value="names" name="named">
-       {{ form.hidden_tag() }}
-   	<td>{{ form.name(value=student.name, style="border: 0; background-color: transparent; border-radius:0;", class="form-control") }}</td>
-    </form>
-    <form method="POST">
-       <input type="hidden" value="{{ student.id }}" name="student">
-       <input type="hidden" value="other" name="named">
-       {{ form.hidden_tag() }}
-   	<td>{{ form.other(value=student.other, style="border: 0; background-color: transparent; border-radius:0;", class="form-control") }}</td>
-     </form>
-     <form method="POST">
-       <input type="hidden" value="{{ student.id }}" name="student">
-       <input type="hidden" value="surname" name="named">
-       {{ form.hidden_tag() }}
-   	<td>{{ form.surname(value=student.surname, style="border: 0; background-color: transparent; border-radius:0;", class="form-control") }}</td>
-    </form>
-	  <td>{{ student.sex }}</td>
-      <td>{{ student.email }}</td>
-	  <td>
-        <div class="dropdown">
-	    	<a class="btn dropdown-toggle"></a>
-	    	<div class="dropdown-content" style="right: 0;">
-		        <a href="{{url_for('student_delete', id=student.id, active=active.session.id, num=room.id)}}">Delete</a>
-    		</div>
-    	</div>
-    </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-    
-<div class="modal fade" id="addStudent" tabindex="-1" aria-labelledby="addStudentLabel" aria-hidden="true">
+<div class="modal" id="addStudent" tabindex="-1" aria-labelledby="addStudentLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -83,8 +33,7 @@
         	<br/>
         	{{ form.surname(placeholder="Surname", class='form-control') }}
         	<br/>
-        	{{ form.email(placeholder="Email", class='form-control') }}<br/>
-        	<select class="form-select" name='gender'>
+        	<select class="form-select" name="sex">
         	    <option >Gender</option>
         	    <option value="Male">Male</option>
 	        	<option value="Female">Female</option>
@@ -100,6 +49,75 @@
     </div>
   </div>
 </div>
+
+
+<div class="table-responsive">
+<table class="table table-hover table-sm table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Other</th>
+      <th scope="col">Surname</th>
+	  <th scope="col">Sex</th>
+      <th scope="col">Email</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+	{% for student in students %}
+    <tr>
+   	<td>{{ student.name }}</td>
+   	<td>{{ student.other }}</td>
+   	<td>{{ student.surname }}</td>
+   	<td>{{ student.sex }}</td>
+   	<td>{{ student.email }}</td>
+	  <td>
+        <div class="dropdown">
+	    	<a class="btn dropdown-toggle"></a>
+	    	<div class="dropdown-content" style="right: 0;">
+	    	    <a data-bs-toggle="modal" href="#editStudent">Edit</a>
+		        <a href="{{url_for('student_delete', id=student.id, active=active.session.id, num=room.id)}}">Delete</a>
+    		</div>
+    	</div>
+    </td>
+    </tr>
+
+<div class="modal" id="editStudent" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="fw-bold fs-5">Edit Student</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form method = 'POST' enctype="multipart/form-data">
+    		{{ form.hidden_tag() }}
+    		<input type="hidden" value="edit" name="named">
+    		<input type="hidden" value="{{ student.id }}" name="student">
+        	{{ form.name(value=student.name, class='form-control') }}<br/>
+        	{{ form.other(value=student.other, class='form-control') }}<br/>
+        	{{ form.surname(value=student.surname, class='form-control') }}
+        	<br/>
+        	<select class="form-select" name="sex">
+        	    <option >{{ student.sex }}</option>
+        	    <option value="Male">Male</option>
+	        	<option value="Female">Female</option>
+        	</select><br/>
+      </div>
+          <div class="modal-footer">
+        	{{ form.submit(class='btn btn-secondary') }}
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+    
+
 
 <br><br>
 

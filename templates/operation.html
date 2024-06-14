@@ -4,10 +4,10 @@
 <br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
 
 
@@ -43,16 +43,16 @@
       <td>{{ session.session }}</td>
       <td>{{ session.term }}</td>
 	  <td>{{ session.date }}</td>
-	  {% if active %}
-	  {% if active.session.id == session.id %}
-	      <td class="text-success">ACTIVE</td>
-	  {% else %}
+	  {% if session %}
+    	  {% if active.session.id == session.id %}
+	      <td class="text-success fw-bold">Active</td>
+	      {% else %}
 	  <form method="POST">
 	      <input type="hidden" value="active" name="name">
 	      <input type="hidden" value="{{ session.id }}" name="session">
 	      <td><button class="btn btn-sm btn-secondary" type="submit">Activate</button></td>
 	  </form>
-	  {% endif %}
+	      {% endif %}
 	  {% endif %}
     </tr>
     {% endfor %}

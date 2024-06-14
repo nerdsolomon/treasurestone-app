@@ -5,12 +5,11 @@
 <br>
 
 {% for message in get_flashed_messages() %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-       {{ message }}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 {% endfor %}
-
 
 <p class="text-center fw-bold">{{ room.title }} BROADSHEET</p>
 
@@ -29,11 +28,11 @@
 <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#Remark">Remark</button>
 </center>
 
-<div class="modal fade" id="Remark" tabindex="-1" aria-labelledby="remarkLabel" aria-hidden="true">
+<div class="modal" id="Remark" tabindex="-1"  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="remarkLabel">Remark</h1>
+        <span class="fw-bold fs-5">Remark</span>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
