@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin
 from datetime import datetime
-
+import os
 
 
 app = Flask(__name__)
