@@ -44,15 +44,13 @@
       <td>{{ session.term }}</td>
 	  <td>{{ session.date }}</td>
 	  {% if session %}
-    	  {% if active.session.id == session.id %}
-	      <td class="text-success fw-bold">Active</td>
-	      {% else %}
+    	 
 	  <form method="POST">
 	      <input type="hidden" value="active" name="name">
 	      <input type="hidden" value="{{ session.id }}" name="session">
 	      <td><button class="btn btn-sm btn-secondary" type="submit">Activate</button></td>
 	  </form>
-	      {% endif %}
+	     
 	  {% endif %}
     </tr>
     {% endfor %}
