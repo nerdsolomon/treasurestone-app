@@ -9,14 +9,13 @@
   </head>
   <body style="background-color: #f0f0f0;">
 	<nav class="nav sticky-top nav-expand-lg nav-white bg-white">
-	<div class="container-fluid">
-	<a class="btn position-fixed start-0 m-3" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><img src="{{url_for('static', filename='default/menu.png')}}"width="25"></a>
-	
-	   <div class="col text-center mb-1">
-		<a href="/"><img class="object-fit-cover" src="{{ url_for('static',filename='default/logo.png') }}" width="70"></a>
-		</div>
-	</div>
-    </nav>
+    <div class="container-fluid">
+      <a class="btn position-fixed start-0 m-3" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><img src="{{url_for('static', filename='default/menu.png')}}"width="25"></a>
+      <div class="col text-center mb-1">
+        <a href="/"><img class="object-fit-cover" src="{{ url_for('static',filename='default/logo.png') }}" width="70"></a>
+      </div>
+    </div>
+  </nav>
 
 <div class="offcanvas offcanvas-start" style="background-color: #f0f0f0; width: 250px" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
   <div class="offcanvas-header bg-light">
@@ -24,62 +23,59 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-  
     {% if current_user.is_authenticated %}
-        {% if current_user.role == "Admin" %}
-    <a class="nav-link {% if request.path == url_for('staffs') %} active text-primary {% else %} text-dark {% endif %}" href="/staffs"><img src="{{url_for('static', filename='default/staff.png')}}"  width="25"> Staffs</a>
-	<a class="nav-link {% if request.path == url_for('classes') %} active text-primary {% else %} text-dark {% endif %}" href="/classes"><img src="{{url_for('static', filename='default/classroom.png')}}"  width="25"> Classrooms</a>
-	<a class="nav-link {% if request.path == url_for('operation') %} active text-primary {% else %} text-dark {% endif %}" href="/operation"><img src="{{url_for('static', filename='default/setting.png')}}"  width="25"> Operation</a>
-	<a class="nav-link {% if request.path == url_for('staff_edit', id=current_user.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('staff_edit', id=current_user.id)}}"><img src="{{url_for('static', filename='default/default.png')}}"  width="25"> Edit Profile</a>		
-	    {% elif current_user.role == "Teacher" %}
-	    {% if room %}
-	<a class="nav-link {% if request.path == url_for('classroom', id=room.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('classroom', id=room.id)}}"><img src="{{url_for('static', filename='default/subject.png')}}"  width="25"> Subjects</a>
-	<a class="nav-link {% if request.path == url_for('students', active=active.session.id, id=room.id)%} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('students', active=active.session.id, id=room.id)}}"><img src="{{url_for('static', filename='default/student.png')}}"  width="25"> Students</a>
-	<a class="nav-link {% if request.path == url_for('broadsheets', active=active.session.id, id=room.id)%} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('broadsheets', active=active.session.id, id=room.id)}}"><img src="{{url_for('static', filename='default/broadsheet.png')}}"  width="25"> Broadsheet</a>
-	<a class="nav-link {% if request.path == url_for('psych_affect', active=active.session.id, id=room.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('psych_affect', active=active.session.id, id=room.id)}}"><img src="{{url_for('static', filename='default/brain.png')}}"  width="25"> Psych & Affective</a>
-		<a class="nav-link {% if request.path == url_for('staff_edit', id=current_user.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('staff_edit', id=current_user.id)}}"><img src="{{url_for('static', filename='default/default.png')}}"  width="25"> Edit Profile</a>		
-		 {% endif %}
-		{% else %}
-		<a class="nav-link {% if request.path == url_for('student', id=current_user.id)%} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('student', id=current_user.id)}}"><img class="rounded" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="25"> Dashboard</a>	    
-       <div class="accordion accordion-flush" id="accordionFlushExample">
+      {% if current_user.role == "Admin" %}
+        <a class="nav-link mb-2 {% if request.path == url_for('staffs') %} active text-primary {% else %} text-dark {% endif %}" href="/staffs"><img src="{{url_for('static', filename='default/staff.png')}}"  width="25"> Staffs</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('classes') %} active text-primary {% else %} text-dark {% endif %}" href="/classes"><img src="{{url_for('static', filename='default/classroom.png')}}"  width="25"> Classrooms</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('operation') %} active text-primary {% else %} text-dark {% endif %}" href="/operation"><img src="{{url_for('static', filename='default/setting.png')}}"  width="25"> Operation</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('staff_edit', id=current_user.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('staff_edit', id=current_user.id)}}"><img src="{{url_for('static', filename='default/default.png')}}"  width="25"> Edit Profile</a>
+      {% elif current_user.role == "Teacher" %}
+        {% if room %}
+        <a class="nav-link mb-2 {% if request.path == url_for('classroom', id=room.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('classroom', id=room.id)}}"><img src="{{url_for('static', filename='default/subject.png')}}"  width="25"> Subjects</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('students', active=active.session.id, id=room.id)%} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('students', active=active.session.id, id=room.id)}}"><img src="{{url_for('static', filename='default/student.png')}}"  width="25"> Students</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('broadsheets', active=active.session.id, id=room.id)%} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('broadsheets', active=active.session.id, id=room.id)}}"><img src="{{url_for('static', filename='default/broadsheet.png')}}"  width="25"> Broadsheet</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('psych_affect', active=active.session.id, id=room.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('psych_affect', active=active.session.id, id=room.id)}}"><img src="{{url_for('static', filename='default/brain.png')}}"  width="25"> Psych & Affective</a>
+        <a class="nav-link mb-2 {% if request.path == url_for('staff_edit', id=current_user.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('staff_edit', id=current_user.id)}}"><img src="{{url_for('static', filename='default/default.png')}}"  width="25"> Edit Profile</a>
+        {% endif %}
+      {% else %}
+        <center>
+        <img class="rounded" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="50">
+        <p>{{ current_user.name }} {{ current_user.other }} {{ current_user.surname }}<br><small>{{ current_user.email }}</small></p>
+        </center><hr>
+        <a class="nav-link mb-2 {% if request.path == url_for('result', id=current_user.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('result', id=current_user.id)}}"><img src="{{url_for('static', filename='default/broadsheet.png')}}" width="25"> Results</a>
+        <div class="accordion accordion-flush" id="accordionFlushExample">
          <div class="accordion-item" style="background-color: transparent;" >
             <div class="accordion-header ">
-              <a style="background-color:transparent;" class="nav-link text-dark accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-controls="flush-collapseOne"><img src="{{url_for('static', filename='default/subject.png')}}" width="25">Subjects</a>
+              <a style="background-color:transparent;" class="nav-link mb-2 text-dark accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-controls="flush-collapseOne"><img src="{{url_for('static', filename='default/subject.png')}}" width="25">Subjects</a>
             </div>
             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
              <div class="accordion-body"> 
             {% for subject in subjects %}
-              <a href="{{url_for('subject', id= subject.id)}}" class="nav-link {% if request.path == url_for('subject', id= subject.id) %} active text-primary {% else %} text-dark {% endif %}">{{ subject.title }}</a>
+              <a href="{{url_for('subject', id= subject.id)}}" class="nav-link mb-2 {% if request.path == url_for('subject', id= subject.id) %} active text-primary {% else %} text-dark {% endif %}">{{ subject.title }}</a>
             {% endfor %}
               </div>
             </div>
           </div>
         </div>
-	    {% endif %}
-	    
-    <a class="nav-link text-dark" href="/logout"><img src="{{url_for('static', filename='default/exit.png')}}"  width="25"> Logout</a>
+      {% endif %}
+      <a class="nav-link mb-2 text-dark" href="/logout"><img class="rounded-circle" src="{{url_for('static', filename='default/exit.png')}}"  width="25"> Logout</a>
     {% else %}
-    <a class="nav-link {% if request.path == url_for('staff_login') %} active text-primary {% else %} text-dark {% endif %}" href="/staff/login"><img src="{{url_for('static', filename='default/staff.png')}}"  width="25"> Staff Login</a>
-    	{% if active.session %}
-    <a class="nav-link {% if request.path == url_for('student_login', active=active.session.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('student_login', active=active.session.id)}}"><img src="{{url_for('static', filename='default/student.png')}}"  width="25"> Student Login</a>
-     	{% endif %}
+      <a class="nav-link mb-2 {% if request.path == url_for('staff_login') %} active text-primary {% else %} text-dark {% endif %}" href="/staff/login"><img src="{{url_for('static', filename='default/staff.png')}}"  width="25"> Staff Login</a>
+      {% if active.session %}
+        <a class="nav-link mb-2 {% if request.path == url_for('student_login', active=active.session.id) %} active text-primary {% else %} text-dark {% endif %}" href="{{url_for('student_login', active=active.session.id)}}"><img src="{{url_for('static', filename='default/student.png')}}"  width="25"> Student Login</a>
+      {% endif %}
     {% endif %}
-
   </div>
-</div>
-    
+</div>  
 {% block content %} 
 
-
 {% endblock %}
-<br>
-<hr>
-<center>
-<small class="text-secondary">Copyright ©️ TSAPS {{ time }}</small><br>
-<a class="btn btn-sm text-secondary" href="mailto:nerdsolomon@gmail.com"><img src="{{ url_for('static',filename='default/signed.png') }}" width="20"> nerdsolomon</a>
-</center>
-<br>
-   <script src="/static/script.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <br><hr>
+  <center>
+    <small class="text-secondary">Copyright ©️ TSAPS {{ time }}</small><br>
+    <a class="btn btn-sm text-secondary" href="mailto:nerdsolomon@gmail.com"><img src="{{ url_for('static',filename='default/signed.png') }}" width="20"> nerdsolomon</a>
+  </center><br>
+  <script src="/static/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>

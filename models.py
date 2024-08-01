@@ -10,7 +10,8 @@ app = Flask(__name__)
 #app.config["SECRET_KEY"] = "school"
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///school.db"
 app.config["SECRET_KEY"] = os.environ['KEY']
-app.config['SQLALCHEMY_DATABASE_URI'] =os.environ['DB_URI']
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DB_URI']
+#app.config['GOOGLE_APPLICATION_CREDENTIALS'] = os.environ['CREDENTIALS']
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

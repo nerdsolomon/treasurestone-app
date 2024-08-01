@@ -9,7 +9,7 @@ import os
 from werkzeug.wrappers import Response
 from werkzeug.security import generate_password_hash, check_password_hash
 import calendar
-
+#from google.cloud import storage
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -30,6 +30,10 @@ FILE_FOLDER = "static/storage"
 if not os.path.exists(FILE_FOLDER):
 	os.makedirs(FILE_FOLDER)
 app.config["FILE_FOLDER"] = FILE_FOLDER
+
+#client = storage.Client()
+#bucket_name = "hdrive-bucket-name"
+#bucket = client.get_bucket(bucket_name)
 
 
 def store(var):
@@ -86,6 +90,18 @@ def download(filename):
         abort(404)
 
 
+#@app.route('/download/<path:filename>')
+#@login_required
+#def download(filename):
+#    file = filename
+#    try:
+#        blob = bucket.get_blob(file)
+#        file_data = blob.download_as_string()
+#        return send_from_directory(BytesIO(file_data), file, as_attachment=True)
+#    except FileNotFoundError:
+#        abort(404)
+
+
 
 @app.route('/save_sheet/<int:active>/<int:id>')
 @login_required
@@ -130,21 +146,13 @@ def student_login(active):
                 login_user(user)
                 session['account'] = "Student"
                 flash(f"Welcome, {current_user.name}!")
-                return redirect(url_for('student', id=current_user.id))
+                return redirect("/")
             else:
                 flash('Incorrect password. Please try again.')
         else:
             flash('User does not exist.')
     return render_template('student_login.html', form=form)
 
-
-
-@app.route('/student/<int:id>')
-@login_required
-def student(id):
-    choices.clear(), answers.clear()
-    return render_template('student.html')
- 
  
  
 @app.route('/subject/<int:id>')
@@ -214,8 +222,11 @@ def subject_questions(id):
     		if form.image.data:
     			file = form.image.data
     			if file and allowed_file(file.filename):
-    				file_name = str(uuid.uuid1())  + "-" + secure_filename(file.filename)
+    				file_name = str(uuid.uuid1()) + ".jpg"
     				image = crop_image(file.read())
+                    #blob = bucket.blob(file_name)
+                    #blob.upload_from_string(image.read(), content_type=file.content_type)
+                    #blob.make_public()
     				image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
     				cbt = CBT(question=form.question.data, answer=form.answer.data, opt_one=form.opt_one.data, opt_two=form.opt_two.data, opt_three=form.opt_three.data, image=file_name, type=form.type.data, subject_id=id)
     				store(cbt)
@@ -250,8 +261,11 @@ def operation():
 		if form_type == "slide":
 			file = form.file.data
 			if file and allowed_file(file.filename):
-				file_name = str(uuid.uuid1())+"-"+secure_filename(file.filename)
+				file_name = str(uuid.uuid1()) + ".jpg"
 				image = crop_image(file.read())
+                #blob = bucket.blob(file_name)
+                #blob.upload_from_string(image.read(), content_type=file.content_type)
+                #blob.make_public()
 				image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
 				images = Slide(image=file_name)
 				store(images)
@@ -304,7 +318,7 @@ def classes():
 
 
 @app.route("/staffs", methods=['POST', 'GET'])
-#@login_required
+@login_required
 def staffs():
     form = PostForm()
     staffs = Staff.query.order_by(Staff.id)
@@ -378,7 +392,10 @@ def classroom(id):
             if subject.file:
                 os.remove(os.path.join(app.config["FILE_FOLDER"], subject.file))
             file = form.file.data
-            file_name = str(uuid.uuid1())  + "-" + secure_filename(file.filename)
+            file_name = subject.room.title + "-" + secure_filename(file.filename)
+            #blob = bucket.blob(file_name)
+            #blob.upload_from_string(file.read(), content_type=file.content_type)
+            #blob.make_public()
             file.save(os.path.join(app.config["FILE_FOLDER"], file_name))
             subject.file = file_name
             store(subject)
@@ -405,8 +422,11 @@ def students(active, id):
         if form_type == "add":
             file = form.file.data
             if file and allowed_file(file.filename):
-                file_name = str(uuid.uuid1())  + "-" + secure_filename(file.filename)
+                file_name = str(uuid.uuid1()) + ".jpg"
                 image = crop_image(file.read())
+                #blob = bucket.blob(file_name)
+                #blob.upload_from_string(image.read(), content_type=file.content_type)
+                #blob.make_public()
                 image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
                 
                 new_student = Student(
@@ -520,6 +540,7 @@ def slide_delete(id):
 @app.route('/result/<int:id>', methods=['POST', 'GET'])
 @login_required
 def result(id):
+    choices.clear(), answers.clear()
 	try:
 	   sheet, psych, affective = results(id), psycho(id), affect(id)
 	   return render_template("result.html", tables=[sheet.to_html(justify="left",classes="table table-hover table-sm table-bordered")], psych=[psych.to_html(justify="left",classes="table table-hover table-sm table-bordered")], affective=[affective.to_html(justify="left",classes="table table-hover table-sm table-bordered")])
