@@ -22,6 +22,7 @@
       <th scope="col">Surname</th>
 	  <th scope="col">Sex</th>
       <th scope="col">Email</th>
+	  <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -32,15 +33,8 @@
    	<td>{{ student.surname }}</td>
    	<td>{{ student.sex }}</td>
    	<td>{{ student.email }}</td>
-	  <td>
-        <div class="dropdown">
-	    	<a class="btn dropdown-toggle"></a>
-	    	<div class="dropdown-content" style="right: 0;">
-	    	    <a data-bs-toggle="modal" href="#editStudent">Edit</a>
-		        <a href="{{url_for('student_delete', id=student.id, active=active.session.id, num=room.id)}}">Delete</a>
-    		</div>
-    	</div>
-    </td>
+	<td><a class='btn btn-secondary btn-sm' data-bs-toggle="modal" href="#editStudent">Edit</a>
+	<a class='btn btn-danger btn-sm' href="{{url_for('student_delete', id=student.id, active=active.session.id, num=room.id)}}">Delete</a></td>
     </tr>
 
 <div class="modal" id="editStudent" tabindex="-1" aria-hidden="true">

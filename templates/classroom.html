@@ -27,6 +27,7 @@
 	<th scope="col">File</th>
 	<th scope="col">Upload</th>
 	<th scope="col"></th>
+	<th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -59,15 +60,10 @@
      </form>
 	 </td>
 	 <td>
-        <div class="dropdown">
-	    	<a class="btn dropdown-toggle"></a>
-	    	<div class="dropdown-content" style="right: 0;">
-                <a href="{{url_for('subject_questions', id=subject.id)}}">Questions</a>
-                <a href="{{url_for('view_scores', id=subject.id)}}">View Scores</a>
-		        <a class="text-danger" href="{{url_for('subject_delete', id=subject.id, num=room.id)}}">Delete</a>
-    		</div>
-    	</div>
-    </td>
+        <a class="btn btn-sm btn-secondary" href="{{url_for('subject_questions', id=subject.id)}}">Questions</a>
+        <a class="btn btn-sm btn-secondary" href="{{url_for('view_scores', id=subject.id)}}">View Scores</a>
+	 </td>
+	<td><a class="btn btn-sm btn-danger" href="{{url_for('subject_delete', id=subject.id, num=room.id)}}">Delete</a></td>
     </tr>
     {% endfor %}
   </tbody>
