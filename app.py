@@ -72,7 +72,7 @@ def download(filename):
     try:
         return send_from_directory(app.config['FILE_FOLDER'], filename, as_attachment=True)
     except FileNotFoundError:
-        abort(404)
+        os.abort(404)
 
 
 @app.route('/save_sheet/<int:active>/<int:id>')
@@ -223,12 +223,11 @@ def staffs():
 @login_required
 def classroom(id):
     form = PostForm()
-    subjects = Subject.query.filter_by(room_id=id)
+    subjects = Subject.query.filter_by(room_id=id).order_by(-Subject.id)
     if request.method == "POST":
         if form.name.data == "subject":
             new_subject = Subject(title=form.string.data.upper(), room_id=id)
             store(new_subject)
-            flash(f"{form.string.data} added.")
             form.string.data = ""
         elif form.name.data == "material":
             subject = Subject.query.filter_by(id=request.form["subject"]).first()
@@ -238,8 +237,7 @@ def classroom(id):
             file_name = subject.room.title + "_" + secure_filename(file.filename)
             file.save(os.path.join(app.config["FILE_FOLDER"], file_name))
             subject.file = file_name
-            store(subject)
-            flash(f"File added for {subject.title}")  
+            store(subject)  
         elif form.name.data == "sub":
             subject = Subject.query.filter_by(id=request.form["subject"]).first()
             subject.title = form.string.data.upper()
@@ -251,7 +249,7 @@ def classroom(id):
 @login_required
 def students(active, id):
     form = StudentForm()
-    students = Student.query.filter_by(session_id=active, room_id=id)
+    students = Student.query.filter_by(session_id=active, room_id=id).order_by(-Student.id)
     if request.method == "POST":
         form_type = request.form["named"]
         if form_type == "add":
@@ -266,8 +264,7 @@ def students(active, id):
             room_id=id,
             session_id=active
             )
-            store(new_student)
-            flash(f"{form.surname.data} added")   
+            store(new_student)   
         elif form_type == "edit":
             student = Student.query.filter_by(id=request.form["student"]).first()
             student.name = form.name.data
@@ -297,7 +294,7 @@ def broadsheets(active, id):
 		student_id = request.form["student"]
 		student = Student.query.filter_by(id=student_id).first()
 		student.remark = form.text.data
-		flash("Fill all forms") if not form.text.data else store(student)			
+		flash("Fill all forms") if  not form.text.data else store(student)			
 	return render_template("broadsheet.html", tables=[sheet.to_html(classes="table table-hover table-bordered")], students=students, form=form)
 		
 
@@ -335,7 +332,6 @@ def student_delete(id, num, active):
         except FileNotFoundError:
             flash("File not found.")
     rem(student)
-    flash("Student deleted.")
     return redirect(url_for("students", id=num, active=active))
 
 @app.route('/subject/delete/<int:id>/<int:num>')
@@ -369,5 +365,4 @@ def staff_delete(id):
 def question_delete(id, num):
     cbt = CBT.query.get(id)
     rem(cbt)
-    flash("Question deleted.")
     return redirect(url_for('subject_questions', id=num))
