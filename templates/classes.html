@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid">
+<div class="container">
 <br>
 
 {% for message in get_flashed_messages() %}
@@ -12,25 +12,25 @@
 {% endfor %}
 
 
-<center>
-<form method = 'POST'>
-	<div class="input-group gap-1" style="width:20rem;">
-		{{ form.hidden_tag() }}
-		<input type="hidden" value="class" name="name">	
-		{{ form.string(class="form-control rounded",placeholder="Add Class") }}
-		{{ form.submit(class='btn rounded btn-secondary') }}
-	</div>
-</form>
-</center><br>
-
-<table class="table table-hover table-sm table-bordered">
+<table class="table table-hover table-bordered">
+	<caption class="caption-top">
+		<form method = 'POST'>
+			<div class="input-group gap-2" style="width:20rem;">
+				{{ form.hidden_tag() }}
+				<input type="hidden" value="class" name="name">	
+				{{ form.string(class="form-control rounded",placeholder="Class") }}
+				{{ form.submit(class='btn fw-bold rounded btn-secondary') }}
+			</div>
+		</form>
+	</caption>
   <thead>
     <tr>
       <th scope="col">Class</th>
       <th scope="col">Teacher</th>
+<th scope="col"></th>
     </tr>
   </thead>
-  <tbody class="table-group-divider">
+  <tbody>
 	{% for class in classes %}
     <tr>
       <td>
@@ -47,24 +47,17 @@
 	{{ form.hidden_tag() }}
 	<input type="hidden" value="staff" name="name">
 	<input type="hidden" value="{{ class.id }}" name="room">	
-	<select class="form-select" name="staff" style="border: 0; background-color: transparent; border-radius:0;">
+	<select class="form-select form-select-sm" name="staff" style="border: 0; background-color: transparent; border-radius:0;">
 		<option >{{ class.staff.name }}</option>
 		{% for staff in staffs %}
 		<option value="{{ staff.id }}">{{ staff.name }}</option>
 		{% endfor %}
 	</select>
-	<button class="btn btn-sm btn-secondary" type="submit">Assign</button>
+	<button class="btn btn-sm rounded btn-secondary" type="submit">Assign</button>
 	</div>
 </form>
 	 </td>
-	 <td>
-        <div class="dropdown">
-	    	<a class="btn dropdown-toggle"></a>
-	    	<div class="dropdown-content" style=" right: 0;">
-		        <a href="{{url_for('class_delete', id=class.id)}}">Delete</a>
-    		</div>
-    	</div>
-    </td>
+	 <td><a class="btn btn-sm btn-danger" href="{{url_for('class_delete', id=class.id)}}">Delete</a></td>
     </tr>
 	{% endfor %}
   </tbody>

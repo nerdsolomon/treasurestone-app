@@ -25,7 +25,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method = 'POST' enctype="multipart/form-data">
+        <form method = 'POST'>
         	{{ form.hidden_tag() }}
         	<input type="hidden" value="setQ" name="name">
         	{{ form.question(class='form-control', placeholder= "Question") }}
@@ -35,7 +35,6 @@
             	<option value="Exam">Exam</option>
             	<option value="Test">Test</option>
             </select><br>
-        	{{ form.image(class='form-control') }}<br>
             {{ form.answer(class='form-control', placeholder="Answer") }}<br>
             {{ form.opt_one(class='form-control', placeholder="A.") }}<br>
             {{ form.opt_two(class='form-control', placeholder="B.") }}<br>
@@ -54,9 +53,6 @@
 	{% for cbt in cbts.items %}
     <div class="col-sm-4 mb-sm-0">
 	    <div class="card">
-	    	{% if cbt.image %}
-		    <img src="{{url_for('static', filename='storage/'+cbt.image )}}" class="object-fit-cover" width="100%">
-	    	{% endif %}
 		    <div class="card-body">
 		    Question : <span style="white-space:pre-wrap !important;">{{ cbt.question }}</span><br>
 		    Answer : {{ cbt.answer }}<br>
@@ -92,8 +88,7 @@
 		            <option value="Exam">Exam</option>
 	            	<option value="Test">Test</option>
             	</select><br>
-	            {{ form.answer(class='form-control', value=cbt.answer) }}
-	            <br>
+	            {{ form.answer(class='form-control', value=cbt.answer) }}<br>
 	            {{ form.opt_one(class='form-control', value=cbt.opt_one) }}<br>
 	            {{ form.opt_two(class='form-control', value=cbt.opt_two) }}<br>
             	{{ form.opt_three(class='form-control', value=cbt.opt_three) }}

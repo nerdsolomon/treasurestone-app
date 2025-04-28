@@ -18,9 +18,9 @@
 	<div class="card-body">
 		<p class="card-text fw-light">You are required to download the PDF for this subject and study before attempting the assessments.</p>
 	 {% if subject.file %}
-		<a class="btn btn-outline-success" href="{{url_for('download', filename=subject.file)}}">Download<a>
+		<a class="nav-link link-success" href="{{url_for('download', filename=subject.file)}}">Download<a>
 	{% else %}
-		<a class="btn btn-outline-danger">No File</a>
+		<a class="nav-link disabled">No File</a>
 	{% endif %}
 	</div>
 </div>
@@ -35,9 +35,9 @@
 		<p class="card-text fw-light">
 			You are required to select an answer before moving to the next question. When next is clicked, your choice will be submitted immediately, so revisiting a question is <b>NOT</b> an option.
 		</p>
-        <div class="row">
-        		<a class="btn col text-primary" href="{{url_for('cbt', id=subject.id, type='Test')}}">Begin Test</a>
-        		<a class="btn text-primary col" href="{{url_for('cbt', id=subject.id, type='Exam')}}">Begin Exam</a>
+        <div class="row text-center">
+        	<a class="col nav-link link-primary {% if grade.test %} text-secondary disabled {% endif %}" aria-disabled="true" href="{{url_for('cbt', id=subject.id, type='Test')}}">Begin Test</a>
+        	<a class="nav-link col link-primary {% if grade.exam %} text-secondary disabled {% endif %}" aria-disabled="true" href="{{url_for('cbt', id=subject.id, type='Exam')}}">Begin Exam</a>
         </div>
     </div>
 </div>

@@ -1,96 +1,54 @@
-from models import Student, Exam, Test, db, Psychomotor, Affective
-import pandas as pd
-from PIL import Image
+from models import Student, Grade, db, app
+import pandas as pd # type: ignore
+from PIL import Image # type: ignore
 import io
-
+import os
+import uuid as uuid
 
 def broadsheet(active, id):
     student_data = Student.query.filter_by(session_id=active, room_id=id).order_by(Student.id).all()
-    student_info = db.session.query(Student, Exam, Test)\
-    .join(Exam, Student.id == Exam.student_id)\
-    .join(Test, Student.id == Test.student_id)\
-    .order_by(Student.id)\
-    .filter(Exam.subject_id == Test.subject_id).all()
-    
-    columns = ["Student", "Subject", "Exam", "Test", "Total"]
+    student_info = db.session.query(Student, Grade).join(Grade, Student.id == Grade.student_id).order_by(Student.id)
+    columns = ["Student", "SUBJECTS", "Exam", "Test", "Total"]
     df = pd.DataFrame(columns=columns)
     
-    for x, student in zip(range(len(student_info)), student_info):
-        df.loc[x, ["Student"]] = student[0].name + " " + student[0].other + " " + student[0].surname
-        df.loc[x, ["Subject"]] = student[1].subject.title
-        df.loc[x, ["Exam"]] = student[1].score
-        df.loc[x, ["Test"]] = student[2].score
-        df.loc[x, ["Total"]] = student[1].score + student[2].score
+    for x, student in zip(range(student_info.count()), student_info):
+        df.loc[x, ["Student"]] = f"{student[0].name}  {student[0].other}  {student[0].surname}"
+        df.loc[x, ["SUBJECTS"]] = student[1].subject.title
+        df.loc[x, ["Exam"]] = student[1].exam
+        df.loc[x, ["Test"]] = student[1].test
+        df.loc[x, ["Total"]] = student[1].exam + student[1].test
 
-    new = df.pivot(index="Student", columns= "Subject", values=["Test", "Exam", "Total"])
-    new["Added Total"] = df.groupby("Student")[["Test", "Exam"]].sum().sum(axis=1)
-    new["Average"] = new["Added Total"] / len(student_info)
+    new = df.pivot(index="Student", columns= "SUBJECTS", values=["Test", "Exam", "Total"])
+    new["Grand Total"] = df.groupby("Student")[["Test", "Exam"]].sum().sum(axis=1)
+    new["Average"] = new["Grand Total"] / student_info.count()
     new["Remark"] = [i.remark for i in student_data]
     new.index.name = None
     broadsheet = new.swaplevel(1, 0, axis=1).sort_index(axis=1)
     return broadsheet
 
-
-
 def results(id):
     try:
-        exam_data = Exam.query.filter_by(student_id=id).all()
-        test_data = Test.query.filter_by(student_id=id).all()
-        exam_content = {"Subject": [i.subject.title for i in exam_data],
-                        "Exam": [i.score for i in exam_data]}
-        test_content = {"Subject": [i.subject.title for i in test_data],
-                        "Test": [i.score for i in test_data]}
-        exam_df = pd.DataFrame(exam_content)
-        test_df = pd.DataFrame(test_content)
-        result = test_df.merge(exam_df, on="Subject", how="outer", suffixes=('_Test', '_Exam'))
-        result["Score"] = result["Exam"].fillna(0) + result["Test"].fillna(0)
-        
-        result["Grade"] = pd.cut(result["Score"], bins=[0, 40, 45, 50, 60, 70, float('inf')], labels=['F', 'E', 'D', 'C', 'B', 'A'])
-        return result
-        
+        grades = Grade.query.filter_by(student_id=id).all()
+        content = {"Subject": [i.subject.title for i in grades], "Exam": [i.exam for i in grades], "Test": [i.test for i in grades]}
+        result = pd.DataFrame(content)
+        result["Total"] = result["Exam"].fillna(0) + result["Test"].fillna(0)
+        result["Grade"] = pd.cut(result["Total"], bins=[0, 40, 45, 50, 60, 70, float('inf')], labels=['F', 'E', 'D', 'C', 'B', 'A'])
+        return result   
     except:
-        blank = pd.DataFrame()
-        return blank
-
-
-
-def affect(id):
-    affective = Affective.query.filter_by(student_id=id).first()
-    if affective:
-        data = {"AFFECTIVE DOMAIN": ["Attentiveness", "Honesty", "Neatness", "Politeness", "Punctuality/Assembly", "Self-Control/Calmness", "Obedience", "Reliability"], "RATING": [affective.attentive, affective.honest, affective.neat, affective.polite, affective.punctual, affective.calm, affective.obey, affective.rely]}
-        frame = pd.DataFrame(data)
-        return frame
-    else:
         return pd.DataFrame()
-
-
-
-def psycho(id):
-    psych = Psychomotor.query.filter_by(student_id=id).first()
-    if psych:
-        data = {"PSYCHOMOTOR DOMAIN": ["Handling Of Tools", "Drawing And Painting", "Handwriting", "Speech Fluency", "Sport And Games", "Public Speaking"], "RATING": [psych.handle, psych.draw, psych.write, psych.speech, psych.sport, psych.public]}
-        frame = pd.DataFrame(data)
-        return frame
-    else:
-        return pd.DataFrame()
-
-
 
 def crop_image(img):
-	image = Image.open(io.BytesIO(img))
-	width, height = image.size
-	if width == height:
-	   return image
-	offset  = int(abs(height-width)/2)
-	if width>height:
-		image = image.crop([offset,0,width-offset,height])
-	else:
-		image = image.crop([0,offset,width,height-offset])
-	return image
-
-
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    image = Image.open(io.BytesIO(img))
+    width, height = image.size
+    if width == height:
+        return image
+    offset  = int(abs(height-width)/2)
+    image = image.crop([offset,0,width-offset,height]) if width > height else image.crop([0,offset,width,height-offset])
+    return image
+           
+def process_image(file):
+    if '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif', 'bmp'}:
+        file_name = f"{uuid.uuid1()}{file.filename}"
+        image = crop_image(file.read())
+        image.save(os.path.join(app.config["FILE_FOLDER"], file_name))
+        return file_name

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+<br>
+{% for message in get_flashed_messages() %}
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+		{{ message }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+{% endfor %}
+
+{% if account == "Student" %}
+	{% if current_user.image %}
+	<div class="text-center f-5">
+		<img class="rounded" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="50"/>
+		{{ current_user.name }} {{ current_user.other }} {{current_user.surname }}<br />{{ current_user.email }}
+  	</div>
+  	<hr />
+	{% endif %}
+{% endif %}
+
+{{ current_user.role }}
+
+{% if account == "Staff" %}
+	<a type="button" class="btn btn-secondary fw-bold btn-sm" data-bs-toggle="modal" href="#edit">Change password</a>
+{% endif %}
+
+<div class="modal" id="edit" tabindex="-1" aria-labelledby="edit" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h1 class="modal-title fs-6" id="edit">Change password</h1>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<form method="POST">
+				{{ form.hidden_tag() }}
+				{{ form.password(class="form-control", placeholder="Old password") }}<br>
+				{{ form.password(class="form-control", placeholder="New password") }}<br>
+				{{ form.password(class="form-control", placeholder="Confirm password") }}<br>
+				{{ form.submit(class="btn btn-secondary") }}
+			</form>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+</div>
+{% endblock %}

@@ -12,38 +12,27 @@
 
 {% if cbts.items %}
 
-<div class="card text-center">
-    <div class="card-header">
-        Question {{ cbts.page }} of {{ cbts.pages }}
-    </div>
-    <div class="card-body text-start">   
+<div class="card">
+    <div class="card-header">Question {{ cbts.page }} of {{ cbts.pages }}</div>
+
+    <div class="card-body">   
     <form method="POST">
     {% for cbt in cbts.items %}
-    	<div class="row">
-    		{% if cbt.image %}
-    		<div class="col-sm-6 mb-sm-0">
-	    		<img src="{{url_for('static', filename='storage/'+cbt.image )}}" class="card-img-top mb-3"><br>
-	    	</div>
-	    	{% endif %}
-
-	    	<div class="col-sm-auto">
-	    		<span style="white-space:pre-wrap !important;" class="fs-5">{{ cbt.question }}</span><br><br>
-       			<div class="form-check">
-	  				<input class="form-check-input" type="radio" name="option" id="A" value='{{ cbt.opt_one }}'> 
-	      			<label class="form-check-label" for="A"><span class="fs-5"> {{ cbt.opt_one }}</span></label>
-      			</div> 	
-	  			<div class="form-check">
-		  			<input class="form-check-input" type="radio" name="option" id="B" value='{{ cbt.opt_two }}'> 
-		  			<label class="form-check-label" for="B"><span class="fs-5"> {{ cbt.opt_two }}</span></label>
-	  			</div>
-	  			<div class="form-check">
-		  			<input class="form-check-input" type="radio" name="option" id="C" value="{{ cbt.opt_three }}"> 
-		  			<label class="form-check-label" for="C"><span class="fs-5"> {{ cbt.opt_three }}</span></label>
-	   			</div>
-	   		</div>
-	   	</div><br>	   
+	 	<p style="white-space:pre-wrap !important;">{{ cbt.question }}</p>
+    	<div class="form-check">
+	  		<input class="form-check-input" type="radio" name="option" id="A" value='{{ cbt.opt_one }}'> 
+			<label class="form-check-label" for="A"> {{ cbt.opt_one }}</label>
+   		</div> 	
+	  	<div class="form-check">
+		  	<input class="form-check-input" type="radio" name="option" id="B" value='{{ cbt.opt_two }}'> 
+		  	<label class="form-check-label" for="B"> {{ cbt.opt_two }}</label>
+	  	</div>
+	  	<div class="form-check">
+		  	<input class="form-check-input" type="radio" name="option" id="C" value="{{ cbt.opt_three }}"> 
+		  	<label class="form-check-label" for="C"> {{ cbt.opt_three }}</label>
+		</div>	   
     {% endfor %}
-    	<button class="btn btn-outline-dark" type="submit">{% if cbts.page==cbts.pages %}Finish{% else %}Next{% endif %}</button>
+ 		<button class="btn btn-primary" type="submit">{% if cbts.page==cbts.pages %}Finish{% else %}Next{% endif %}</button>
     </form>
     </div>
 </div>
@@ -53,8 +42,8 @@
 <div class="alert alert-warning show">
     <p class="fs-4">Questions are unavailable for this subject.</p>
 </div>
-{% endif %}
 
-<br><br>
+{% endif %}
+<br>
 </div>
 {% endblock %}

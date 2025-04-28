@@ -8,7 +8,7 @@ class PostForm(FlaskForm):
 	number = IntegerField(validators=[DataRequired()])
 	string = StringField(validators=[DataRequired()])
 	text = TextAreaField(validators=[DataRequired()])
-	file = FileField(validators=[DataRequired()])
+	file = FileField()
 	password = PasswordField(validators=[DataRequired()])
 	old = PasswordField(validators=[DataRequired()])
 	check = PasswordField(validators=[DataRequired()])
@@ -23,7 +23,7 @@ class StudentForm(FlaskForm):
 	sex = StringField(validators=[DataRequired()])
 	email = EmailField(validators=[DataRequired()])
 	password = PasswordField(validators=[DataRequired()])
-	file = FileField(validators=[DataRequired()])
+	file = FileField()
 	submit = SubmitField("Done")
 	
 
@@ -34,6 +34,5 @@ class CBTForm(FlaskForm):
 	opt_two  = StringField(validators=[DataRequired()])
 	opt_three = StringField(validators=[DataRequired()])
 	type = StringField(validators=[DataRequired()])
-	image = FileField()
 	submit = SubmitField("Done")
 	

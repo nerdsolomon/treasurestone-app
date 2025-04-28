@@ -1,58 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid"><br>
+<div class="container">
 
 {% for message in get_flashed_messages() %}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-	{{ message }}
-	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+	<div class="alert alert-success alert-dismissible fade show" role="alert">
+		{{ message }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
 {% endfor %}
 
-<p class="text-center fw-bold">{{ room.title }}</p>
-
-<center>
-    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addStudent">Add Student</button>
-</center><br>
-
-<div class="modal" id="addStudent" tabindex="-1" aria-labelledby="addStudentLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="addStudentLabel">Add Student</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-         <form method = 'POST' enctype="multipart/form-data">
-    		{{ form.hidden_tag() }}
-    		<input type="hidden" value="add" name="named">
-        	{{ form.name(placeholder="First Name", class='form-control') }}
-        	<br/>
-        	{{ form.other(placeholder="Other Name", class='form-control') }}
-        	<br/>
-        	{{ form.surname(placeholder="Surname", class='form-control') }}
-        	<br/>
-        	<select class="form-select" name="sex">
-        	    <option >Gender</option>
-        	    <option value="Male">Male</option>
-	        	<option value="Female">Female</option>
-        	</select><br/>
-            {{ form.password(placeholder="Password", class='form-control') }}
-            <br>
-        	{{ form.file(class='form-control') }}<br>
-      </div>
-          <div class="modal-footer">
-        	{{ form.submit(class='btn btn-secondary') }}
-          </div>
-        </form>
-    </div>
-  </div>
-</div>
-
-
 <div class="table-responsive">
-<table class="table table-hover table-sm table-bordered">
+<table class="table table-hover table-bordered">
+	<caption class="caption-top">
+		<button type="button" class="btn fw-bold btn-secondary" data-bs-toggle="modal" data-bs-target="#addStudent">Add New</button>
+	</caption>
   <thead>
     <tr>
       <th scope="col">Name</th>
@@ -62,7 +24,7 @@
       <th scope="col">Email</th>
     </tr>
   </thead>
-  <tbody class="table-group-divider">
+  <tbody>
 	{% for student in students %}
     <tr>
    	<td>{{ student.name }}</td>
@@ -85,27 +47,24 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="fw-bold fs-5">Edit Student</span>
+        <span class="fw-bold fs-6">Edit</span>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-         <form method = 'POST' enctype="multipart/form-data">
+         <form method = 'POST'>
     		{{ form.hidden_tag() }}
     		<input type="hidden" value="edit" name="named">
     		<input type="hidden" value="{{ student.id }}" name="student">
         	{{ form.name(value=student.name, class='form-control') }}<br/>
         	{{ form.other(value=student.other, class='form-control') }}<br/>
-        	{{ form.surname(value=student.surname, class='form-control') }}
-        	<br/>
+        	{{ form.surname(value=student.surname, class='form-control') }}<br/>
         	<select class="form-select" name="sex">
         	    <option >{{ student.sex }}</option>
         	    <option value="Male">Male</option>
 	        	<option value="Female">Female</option>
         	</select><br/>
-      </div>
-          <div class="modal-footer">
         	{{ form.submit(class='btn btn-secondary') }}
-          </div>
+        </div>
         </form>
     </div>
   </div>
@@ -116,10 +75,33 @@
 </table>
 </div>
 
-    
-
-
-<br><br>
-
+<div class="modal" id="addStudent" tabindex="-1" aria-labelledby="addStudentLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h1 class="modal-title fs-6" id="addStudentLabel">Add New</h1>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		   <form method = 'POST' enctype="multipart/form-data">
+			  {{ form.hidden_tag() }}
+			  <input type="hidden" value="add" name="named">
+			  {{ form.name(placeholder="First Name", class='form-control') }}<br/>
+			  {{ form.other(placeholder="Other Name", class='form-control') }}<br/>
+			  {{ form.surname(placeholder="Surname", class='form-control') }}<br/>
+			  <select class="form-select" name="sex">
+				  <option >Gender</option>
+				  <option value="Male">Male</option>
+				  <option value="Female">Female</option>
+			  </select><br/>
+			  {{ form.password(placeholder="Password", class='form-control') }}<br>
+			  {{ form.file(class='form-control') }}<br>
+			  {{ form.submit(class='btn btn-secondary') }}
+		  </div>
+		  </form>
+	  </div>
+	</div>
+  </div>
+  
 </div>
 {% endblock %}

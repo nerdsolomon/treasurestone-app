@@ -1,96 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container-fluid">
-<br>
+	<div class="container">
+	<br>
 
-{% for message in get_flashed_messages() %}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-	{{ message }}
-	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
+		{% for message in get_flashed_messages() %}
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			{{ message }}
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+		{% endfor %}
 
-<p class="text-center fw-bold">{{ subject.title }}</p>
-
-<div class="alert alert-warning text-center">
-    All student must have an Exam score and a Test score.
-</div>
-
-<div class="row">
-	<div class="col-sm-6 mb-sm-0">
-    <p class="text-center fw-bold">Test Scores</p>
-
-<form method="POST">
-	<div class="input-group mb-3">
-	{{ form.hidden_tag() }}
-	<input type="hidden" value="test" name="name">
-	<select class="form-select" name="student">
-    	<option >Student</option>
-		{% for student in students %}
-   	<option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
-   	 {% endfor %}
-	</select>
-	{{form.number(class="form-control", placeholder="Score")}}
-    {{form.submit(class="btn btn-secondary")}}
-	</div>
-</form>
-
-<table class="table table-hover table-sm table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-	  <th scope="col">Score</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-	{% for test in tests %}
-    <tr>
-      <td>{{ test.student.name }} {{ test.student.surname }}</td>
-	  <td>{{ test.score }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-	</div>
+		<p class="text-center f-5 fw-bold">{{ subject.title }}</p>
 	
-	<div class="col-sm-6">
-<p class="text-center fw-bold">Exam Scores</p>
-
-<form method="POST">
-	<div class="input-group mb-3">
-	{{ form.hidden_tag() }}
-	<input type="hidden" value="exam" name="name">
-	<select class="form-select" name="student">
-    	<option >Student</option>
-		{% for student in students %}
-   	 <option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
-   	 {% endfor %}
-	</select>
-	{{form.number(class="form-control", placeholder="Score")}}
-    {{form.submit(class="btn btn-secondary")}}
+		<form method="POST">
+			<div class="input-group gap-2 mb-3" style="width: 30rem">
+				{{ form.hidden_tag() }}
+				<select class="form-select" name="student">
+					<option>Student</option>
+					{% for student in students %}
+						<option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
+					{% endfor %}
+				</select>
+				<select class="form-select" name="name">
+					<option value="test">Test</option>
+					<option value="exam">Exam</option>
+				</select>
+				{{form.number(class="form-control", placeholder="Score")}}
+				{{form.submit(class="btn rounded btn-secondary")}}
+			</div>
+		</form>
+	
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Test</th>
+					<th scope="col">Exam</th>
+				</tr>
+			</thead>
+			<tbody class="table-group-divider">
+			{% for grade in grades %}
+				<tr>
+			 		<td>{{ grade.student.name }} {{ grade.student.surname }}</td>
+					<td>{{ grade.test }}</td>
+					<td>{{ grade.exam }}</td>
+			 	</tr>
+		 	{% endfor %}
+		 	</tbody>
+		</table>
 	</div>
-</form>
-
-<table class="table table-hover table-sm table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-	  <th scope="col">Score</th>
-    </tr>
-  </thead>
-  <tbody class="table-group-divider">
-	{% for exam in exams %}
-    <tr>
-      <td>{{ exam.student.name }} {{ exam.student.surname }}</td>
-	  <td>{{ exam.score }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-	</div>
-</div>
-
-<br><br>
-</div>
 {% endblock %}

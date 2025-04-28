@@ -1,26 +1,33 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import UserMixin
+from flask import Flask, session # type: ignore
+from flask_sqlalchemy import SQLAlchemy # type: ignore
+from flask_migrate import Migrate # type: ignore
+from flask_login import LoginManager, UserMixin # type: ignore
 from datetime import datetime
 import os
 
-
 app = Flask(__name__)
-#app.config["SECRET_KEY"] = "school"
-#app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///school.db"
-app.config["SECRET_KEY"] = os.environ['KEY']
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DB_URI']
+app.config["SECRET_KEY"] = "school"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///school.db"
+#app.config["SECRET_KEY"] = os.environ['KEY']
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DB_URI']
 #app.config['GOOGLE_APPLICATION_CREDENTIALS'] = os.environ['CREDENTIALS']
+
+FILE_FOLDER = "static/storage"
+if not os.path.exists(FILE_FOLDER):
+	os.makedirs(FILE_FOLDER)
+app.config["FILE_FOLDER"] = FILE_FOLDER
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 date = datetime.now()
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "homepage"
 
-class Slide(db.Model):
-	id =  db.Column(db.Integer, primary_key = True)
-	image = db.Column(db.String)
+@login_manager.user_loader
+def load_user(user):
+    return Staff.query.get(user) if session.get("account") == "Staff" else Student.query.get(user)
 
 
 class Staff(db.Model, UserMixin):
@@ -30,7 +37,6 @@ class Staff(db.Model, UserMixin):
 	password = db.Column(db.String, nullable=False)
 	role = db.Column(db.String)
 	room_id = db.relationship('Class', backref="staff")
-
 
 class Student(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key = True)
@@ -44,12 +50,8 @@ class Student(db.Model, UserMixin):
 	remark = db.Column(db.String)
 	session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete="CASCADE"))
 	room_id = db.Column(db.Integer, db.ForeignKey('class.id', ondelete="CASCADE"))
-	test_id = db.relationship('Test', backref='student', cascade="all, delete-orphan")
-	exam_id = db.relationship('Exam', backref='student', cascade="all, delete-orphan")
-	psych_id = db.relationship("Psychomotor", backref='student', cascade="all, delete-orphan")
-	affect_id = db.relationship("Affective", backref='student', cascade="all, delete-orphan")
-	
-	
+	grade_id = db.relationship('Grade', backref='student', cascade="all, delete-orphan")
+ 
 class Class(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
 	title = db.Column(db.String, nullable=False)
@@ -57,16 +59,13 @@ class Class(db.Model):
 	subject_id = db.relationship('Subject', backref='room', cascade="all, delete-orphan")
 	student_id = db.relationship('Student', backref='room', cascade="all, delete-orphan")
 
-
 class Subject(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
 	title = db.Column(db.String, nullable=False) 
 	file = db.Column(db.String)
 	room_id = db.Column(db.Integer, db.ForeignKey('class.id', ondelete="CASCADE"))
 	cbt_id = db.relationship('CBT', backref='subject', cascade="all, delete-orphan")
-	test_id = db.relationship('Test', backref='subject', cascade="all, delete-orphan")
-	exam_id = db.relationship('Exam', backref='subject', cascade="all, delete-orphan")
-	
+	grade_id = db.relationship('Grade', backref='subject', cascade="all, delete-orphan")
 	
 class Session(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
@@ -76,12 +75,10 @@ class Session(db.Model):
 	active_id = db.relationship("Active", backref="session", cascade="all, delete-orphan")
 	student_id = db.relationship("Student", backref="session", cascade="all, delete-orphan")
 	
-
 class Active(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
 	session_id =  db.Column(db.Integer, db.ForeignKey("session.id", ondelete="CASCADE"))
 	
-
 class CBT(db.Model):
 	id =  db.Column(db.Integer, primary_key = True)
 	question = db.Column(db.String)
@@ -89,52 +86,17 @@ class CBT(db.Model):
 	opt_one = db.Column(db.String)
 	opt_two = db.Column(db.String)
 	opt_three = db.Column(db.String)
-	image = db.Column(db.String)
 	type = db.Column(db.String)
 	subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete="CASCADE"))
 	
-	
-class Exam(db.Model):
-	id =  db.Column(db.Integer, primary_key = True)
-	score = db.Column(db.Integer)
-	student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete="CASCADE"), nullable=False)
-	subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete="CASCADE"))
-	
+class Grade(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    exam = db.Column(db.Float, default=0)
+    test = db.Column(db.Float, default=0)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete="CASCADE"), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete="CASCADE"), nullable=False)
 
-class Test(db.Model):
-	id =  db.Column(db.Integer, primary_key = True)
-	score = db.Column(db.Integer)
-	student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete="CASCADE"), nullable=False)
-	subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete="CASCADE"))
-
-
-class Affective(db.Model):
-	id =  db.Column(db.Integer, primary_key = True)
-	attentive = db.Column(db.String, nullable=False)
-	honest = db.Column(db.String, nullable=False)
-	neat = db.Column(db.String, nullable=False)
-	polite = db.Column(db.String, nullable=False)
-	punctual = db.Column(db.String, nullable=False)
-	calm = db.Column(db.String, nullable=False)
-	obey = db.Column(db.String, nullable=False)
-	rely = db.Column(db.String, nullable=False)
-	student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete="CASCADE"), nullable=False)
-
-
-class Psychomotor(db.Model):
-	id =  db.Column(db.Integer, primary_key = True)
-	handle = db.Column(db.String, nullable=False)
-	draw = db.Column(db.String, nullable=False)
-	speech = db.Column(db.String, nullable=False)
-	write = db.Column(db.String, nullable=False)
-	public = db.Column(db.String, nullable=False)
-	sport = db.Column(db.String, nullable=False)
-	student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete="CASCADE"),nullable=False)
-
-
-	
 def create_model():
 	with app.app_context():
 		db.create_all()
 		return 'Database model created successfully'
-		
