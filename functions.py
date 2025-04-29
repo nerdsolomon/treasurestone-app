@@ -6,7 +6,6 @@ import os
 import uuid as uuid
 
 def broadsheet(active, id):
-    student_data = Student.query.filter_by(session_id=active, room_id=id).order_by(Student.id).all()
     student_info = db.session.query(Student, Grade).join(Grade, Student.id == Grade.student_id).order_by(Student.id)
     columns = ["Student", "SUBJECTS", "Exam", "Test", "Total"]
     df = pd.DataFrame(columns=columns)
@@ -20,8 +19,7 @@ def broadsheet(active, id):
 
     new = df.pivot(index="Student", columns= "SUBJECTS", values=["Test", "Exam", "Total"])
     new["Grand Total"] = df.groupby("Student")[["Test", "Exam"]].sum().sum(axis=1)
-    new["Average"] = new["Grand Total"] / student_info.count()
-    new["Remark"] = [i.remark for i in student_data]
+    new["Average"] = new["Grand Total"] / df.groupby("Student").apply(lambda x:((x["Test"].notnull()) & (x["Test"].notnull())).sum())
     new.index.name = None
     broadsheet = new.swaplevel(1, 0, axis=1).sort_index(axis=1)
     return broadsheet

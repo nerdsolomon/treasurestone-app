@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired
-from wtforms import StringField, SubmitField, PasswordField, TextAreaField, FileField, EmailField, IntegerField
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField, FileField, EmailField, FloatField
 
 
 class PostForm(FlaskForm):
 	name = StringField(validators=[DataRequired()])
-	number = IntegerField(validators=[DataRequired()])
+	number = FloatField(validators=[DataRequired()])
 	string = StringField(validators=[DataRequired()])
 	text = TextAreaField(validators=[DataRequired()])
 	file = FileField()
@@ -24,6 +24,7 @@ class StudentForm(FlaskForm):
 	email = EmailField(validators=[DataRequired()])
 	password = PasswordField(validators=[DataRequired()])
 	file = FileField()
+	remark = TextAreaField()
 	submit = SubmitField("Done")
 	
 

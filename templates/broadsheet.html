@@ -24,36 +24,10 @@
 <br/>
 
 <center>
-<a class="btn btn-outline-success" href="{{url_for('save_sheet', active=active.session.id, id=room.id)}}">Download</a>
-<button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#Remark">Remark</button>
+<a class="btn btn-outline-success" href="{{url_for('save_sheet', active=active.session.id, id=room.id)}}">Save as Excel</a>
 </center>
 
-<div class="modal" id="Remark" tabindex="-1"  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="fw-bold fs-5">Remark</span>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method = 'POST'>
-        	<select class="form-select" name="student">
-            	<option selected>Student</option>
-        		{% for student in students %}
-           	<option value="{{ student.id }}">
-           	    {{ student.name }} {{ student.surname }}
-           	</option>
-	        	{% endfor %}
-        	</select><br>
-        	{{ form.text(class="form-control", placeholder="Remark") }}
-      </div>
-          <div class="modal-footer">
-        	{{ form.submit(class='btn btn-secondary') }}
-          </div>
-        </form>
-    </div>
-  </div>
-</div>
+
 
 <br/><br/>
 </div>

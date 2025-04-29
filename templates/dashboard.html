@@ -10,21 +10,24 @@
 	</div>
 {% endfor %}
 
-{% if account == "Student" %}
-	{% if current_user.image %}
-	<div class="text-center f-5">
+
+<div class="text-center f-5">
+	{% if account == "Student" and current_user.image %}
 		<img class="rounded" src="{{ url_for('static',filename='storage/'+current_user.image) }}" width="50"/>
-		{{ current_user.name }} {{ current_user.other }} {{current_user.surname }}<br />{{ current_user.email }}
-  	</div>
-  	<hr />
+	{% else %}
+		<img class="rounded-circle m-3" src="{{ url_for('static',filename='default/default.png') }}" width="150"/>
 	{% endif %}
-{% endif %}
-
-{{ current_user.role }}
-
-{% if account == "Staff" %}
-	<a type="button" class="btn btn-secondary fw-bold btn-sm" data-bs-toggle="modal" href="#edit">Change password</a>
-{% endif %}
+	<br>
+	{% if account == "Staff" %}
+		<p class="display-4">{{ current_user.name }}</p>
+		<p class="display-6">{{ current_user.email }}</p>
+		<p class="fs-4">{{ current_user.role }}</p>
+		<a type="button" class="btn btn-secondary m-3 fw-bold btn-sm" data-bs-toggle="modal" href="#edit">Change password</a>
+	{% else %}
+		<p class="display-4">{{ current_user.name }} {{ current_user.other }} {{current_user.surname }}</p>
+		<p class="display-6">{{ current_user.email }}</p>
+	{% endif %}
+</div>
 
 <div class="modal" id="edit" tabindex="-1" aria-labelledby="edit" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
@@ -36,9 +39,9 @@
 		<div class="modal-body">
 			<form method="POST">
 				{{ form.hidden_tag() }}
-				{{ form.password(class="form-control", placeholder="Old password") }}<br>
+				{{ form.old(class="form-control", placeholder="Old password") }}<br>
 				{{ form.password(class="form-control", placeholder="New password") }}<br>
-				{{ form.password(class="form-control", placeholder="Confirm password") }}<br>
+				{{ form.check(class="form-control", placeholder="Confirm password") }}<br>
 				{{ form.submit(class="btn btn-secondary") }}
 			</form>
 		</div>

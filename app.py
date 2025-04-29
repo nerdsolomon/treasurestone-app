@@ -92,15 +92,15 @@ def dashboard():
     id = current_user.id
     staff = Staff.query.filter_by(id=id).first()
     if request.method == "POST":
-        if check_password_hash(staff.password, form.password.data):
-            staff.name = form.string.data
-            staff.email = form.email.data
-            store(staff)
-            flash("Profile updated")
+        if check_password_hash(staff.password, form.old.data):
+            if form.password.data == form.check.data:
+                staff.password = form.password.data
+                store(staff)
+                flash("Password change successful")
+            else:
+                flash("New password don't match")
         else:
-            flash("Password incorrect")
-    form.string.data = staff.name
-    form.email.data = staff.email        
+            flash("Old password is incorrect")        
     return render_template("dashboard.html", form=form)
 
  
@@ -271,6 +271,7 @@ def students(active, id):
             student.other = form.other.data
             student.surname = form.surname.data
             student.sex = form.sex.data
+            student.remark = form.remark.data
             student.email = f"{form.name.data.lower()}{form.surname.data.lower()}@tsaps.edu"
             store(student)
     return render_template("students.html", students=students, form=form)
@@ -287,15 +288,8 @@ def result(id):
 @app.route("/broadsheet/<int:active>/<int:id>", methods=['POST', 'GET'])
 @login_required
 def broadsheets(active, id):
-	form = PostForm()
-	students = Student.query.filter_by(session_id=active, room_id=id)
-	sheet = broadsheet(active, id)
-	if request.method == "POST":
-		student_id = request.form["student"]
-		student = Student.query.filter_by(id=student_id).first()
-		student.remark = form.text.data
-		flash("Fill all forms") if  not form.text.data else store(student)			
-	return render_template("broadsheet.html", tables=[sheet.to_html(classes="table table-hover table-bordered")], students=students, form=form)
+	sheet = broadsheet(active, id)			
+	return render_template("broadsheet.html", tables=[sheet.to_html(classes="table table-hover table-bordered")])
 		
 
 @app.route('/view-scores/<int:id>', methods=['POST', 'GET'])
